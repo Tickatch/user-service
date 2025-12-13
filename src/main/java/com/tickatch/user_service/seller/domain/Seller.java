@@ -19,6 +19,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.PostLoad;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -242,6 +243,19 @@ public class Seller extends BaseUser {
   private void validateRejectionReason(String reason) {
     if (reason == null || reason.isBlank()) {
       throw new SellerException(INVALID_REJECTION_REASON);
+    }
+  }
+
+  /**
+   * JPA @Embedded 객체 초기화.
+   *
+   * JPA는 @Embedded 객체의 모든 컬럼이 null이면 객체 자체를 null로 로드한다.
+   * 이 콜백에서 null인 @Embedded 객체를 빈 객체로 초기화한다.
+   */
+  @PostLoad
+  private void initEmbeddedObjects() {
+    if (this.settlementInfo == null) {
+      this.settlementInfo = SettlementInfo.empty();
     }
   }
 }
