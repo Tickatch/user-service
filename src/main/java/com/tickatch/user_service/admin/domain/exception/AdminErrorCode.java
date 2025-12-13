@@ -21,6 +21,11 @@ public enum AdminErrorCode implements ErrorCode {
   ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "ADMIN_NOT_FOUND"),
 
   // ========================================
+  // 중복 (409)
+  // ========================================
+  ADMIN_ALREADY_EXISTS(HttpStatus.CONFLICT.value(), "ADMIN_ALREADY_EXISTS"),
+
+  // ========================================
   // 검증 (400)
   // ========================================
   INVALID_ADMIN_ROLE(HttpStatus.BAD_REQUEST.value(), "INVALID_ADMIN_ROLE"),
