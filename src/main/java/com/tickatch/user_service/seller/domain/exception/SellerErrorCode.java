@@ -21,6 +21,12 @@ public enum SellerErrorCode implements ErrorCode {
   SELLER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "SELLER_NOT_FOUND"),
 
   // ========================================
+  // 중복 (409)
+  // ========================================
+  SELLER_ALREADY_EXISTS(HttpStatus.CONFLICT.value(), "SELLER_ALREADY_EXISTS"),
+  BUSINESS_NUMBER_ALREADY_EXISTS(HttpStatus.CONFLICT.value(), "BUSINESS_NUMBER_ALREADY_EXISTS"),
+
+  // ========================================
   // 검증 - 사업자 정보 (400)
   // ========================================
   INVALID_BUSINESS_NAME(HttpStatus.BAD_REQUEST.value(), "INVALID_BUSINESS_NAME"),
