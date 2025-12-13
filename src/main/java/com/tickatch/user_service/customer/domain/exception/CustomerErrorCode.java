@@ -21,6 +21,11 @@ public enum CustomerErrorCode implements ErrorCode {
   CUSTOMER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "CUSTOMER_NOT_FOUND"),
 
   // ========================================
+  // 중복 (409)
+  // ========================================
+  CUSTOMER_ALREADY_EXISTS(HttpStatus.CONFLICT.value(), "CUSTOMER_ALREADY_EXISTS"),
+
+  // ========================================
   // 검증 (400)
   // ========================================
   INVALID_BIRTH_DATE(HttpStatus.BAD_REQUEST.value(), "INVALID_BIRTH_DATE"),
