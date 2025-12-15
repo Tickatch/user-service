@@ -40,48 +40,120 @@ Tickatch는 콘서트, 뮤지컬, 연극, 스포츠 등 다양한 공연의 티�
 ### 레이어 구조
 
 ```
-user-service/
-├── presentation/       # API 컨트롤러, DTO
-├── application/        # 서비스 레이어
-│   ├── service/
-│   │   ├── CustomerService
-│   │   ├── SellerService
-│   │   └── AdminService
-│   └── messaging/      # 이벤트 발행/구독
-├── domain/             # 엔티티, VO, 리포지토리 인터페이스
-│   ├── customer/
-│   │   ├── Customer
-│   │   ├── CustomerGrade
-│   │   └── CustomerRepository
-│   ├── seller/
-│   │   ├── Seller
-│   │   ├── SellerStatus
-│   │   ├── BusinessInfo
-│   │   ├── SettlementInfo
-│   │   └── SellerRepository
-│   └── admin/
-│       ├── Admin
-│       ├── AdminRole
-│       └── AdminRepository
-├── common/             # 공통 도메인
+src/main/java
+├── customer/                       # Bounded Context (Customer)
+│   ├── presentation/
+│   │   └── api/
+│   │       ├── customer/           # 고객 본인용
+│   │       │   ├── dto/
+│   │       │   └── CustomerApi
+│   │       └── admin/              # 관리자용
+│   │           ├── dto/
+│   │           └── CustomerAdminApi
+│   ├── application/
+│   │   └── service/
+│   │       └── CustomerService
+│   ├── domain/
+│   │   ├── Customer                # Aggregate Root (Entity)
+│   │   ├── vo/
+│   │   │   └── CustomerGrade
+│   │   ├── service/                # Domain Service
+│   │   ├── repository/
+│   │   │   └── CustomerRepository
+│   │   └── exception/
+│   │       ├── CustomerException
+│   │       └── CustomerErrorCode
+│   └── infrastructure/
+│       └── external/
+│
+├── seller/                         # Bounded Context (Seller)
+│   ├── presentation/
+│   │   └── api/
+│   │       ├── seller/             # 판매자 본인용
+│   │       │   ├── dto/
+│   │       │   └── SellerApi
+│   │       └── admin/              # 관리자용 (승인/거절)
+│   │           ├── dto/
+│   │           └── SellerAdminApi
+│   ├── application/
+│   │   └── service/
+│   │       ├── SellerService
+│   │       └── SellerApprovalService
+│   ├── domain/
+│   │   ├── Seller                  # Aggregate Root (Entity)
+│   │   ├── vo/
+│   │   │   ├── SellerStatus
+│   │   │   ├── BusinessInfo
+│   │   │   └── SettlementInfo
+│   │   ├── service/                # Domain Service
+│   │   ├── repository/
+│   │   │   └── SellerRepository
+│   │   └── exception/
+│   │       ├── SellerException
+│   │       └── SellerErrorCode
+│   └── infrastructure/
+│       └── external/
+│
+├── admin/                          # Bounded Context (Admin)
+│   ├── presentation/
+│   │   └── api/
+│   │       └── admin/
+│   │           ├── dto/
+│   │           └── AdminApi
+│   ├── application/
+│   │   └── service/
+│   │       └── AdminService
+│   ├── domain/
+│   │   ├── Admin                   # Aggregate Root (Entity)
+│   │   ├── vo/
+│   │   │   ├── AdminRole
+│   │   │   └── AdminProfile
+│   │   ├── service/                # Domain Service
+│   │   ├── repository/
+│   │   │   └── AdminRepository
+│   │   └── exception/
+│   │       ├── AdminException
+│   │       └── AdminErrorCode
+│   └── infrastructure/
+│       └── external/
+│
+├── common/                         # User 공통 도메인
 │   └── domain/
-│       ├── BaseUser
-│       ├── UserStatus
-│       ├── UserProfile
-│       └── Address
-├── infrastructure/     # 리포지토리 구현, 외부 연동
-└── global/             # 공통 설정, 예외 처리
-    └── domain/
-        ├── AbstractTimeEntity
-        └── AbstractAuditEntity
+│       ├── BaseUser                # 공통 추상 클래스
+│       ├── vo/
+│       │   ├── UserStatus
+│       │   ├── UserProfile
+│       │   └── Address
+│       └── exception/
+│           └── UserException
+│
+└── global/
+    ├── exception/
+    │   ├── GlobalExceptionHandler
+    │   └── ErrorResponse
+    ├── config/
+    │   ├── SecurityConfig
+    │   ├── JpaConfig
+    │   └── RabbitMQConfig
+    ├── utils/
+    └── infrastructure/
+        ├── event/
+        │   └── dto/
+        │       ├── CustomerWithdrawnEvent
+        │       ├── SellerApprovedEvent
+        │       ├── SellerRejectedEvent
+        │       └── SellerWithdrawnEvent
+        └── domain/
+            ├── AbstractTimeEntity
+            └── AbstractAuditEntity
 ```
 
 ### 상속 구조
 
 ```
-AbstractTimeEntity
-    └── AbstractAuditEntity
-            └── BaseUser
+AbstractTimeEntity (global)
+    └── AbstractAuditEntity (global)
+            └── BaseUser (common)
                     ├── Customer
                     ├── Seller
                     └── Admin
@@ -217,11 +289,11 @@ PENDING ──→ APPROVED ──→ (공연 등록 가능)
 ```sql
 -- 공통 테이블
 users (id, email, user_type, name, phone, status, ...)
-    │
+│
     ├── customers (user_id, grade, birth_date)
-    │
+│
     ├── sellers (user_id, business_*, settlement_*, seller_status, ...)
-    │
+│
     └── admins (user_id, admin_role, department)
 ```
 

@@ -21,7 +21,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 @MappedSuperclass
 public abstract class AbstractAuditEntity extends AbstractTimeEntity {
   /* 등록자 계정 */
-  @Column(name = "created_by", nullable = false)
+  @Column(name = "created_by", nullable = false, updatable = false)
   @CreatedBy
   private String createdBy;
 
