@@ -25,23 +25,31 @@ class AdminExceptionTest {
 
   @Test
   void 검증_에러코드는_400_상태코드를_가진다() {
-    assertThat(AdminErrorCode.INVALID_ADMIN_ROLE.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    assertThat(AdminErrorCode.INVALID_DEPARTMENT.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(AdminErrorCode.INVALID_ADMIN_ROLE.getStatus())
+        .isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(AdminErrorCode.INVALID_DEPARTMENT.getStatus())
+        .isEqualTo(HttpStatus.BAD_REQUEST.value());
   }
 
   @Test
   void 권한_에러코드는_403_상태코드를_가진다() {
-    assertThat(AdminErrorCode.ADMIN_PERMISSION_DENIED.getStatus()).isEqualTo(HttpStatus.FORBIDDEN.value());
-    assertThat(AdminErrorCode.ONLY_ADMIN_CAN_CREATE_ADMIN.getStatus()).isEqualTo(HttpStatus.FORBIDDEN.value());
-    assertThat(AdminErrorCode.ONLY_ADMIN_CAN_CHANGE_ROLE.getStatus()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    assertThat(AdminErrorCode.ADMIN_PERMISSION_DENIED.getStatus())
+        .isEqualTo(HttpStatus.FORBIDDEN.value());
+    assertThat(AdminErrorCode.ONLY_ADMIN_CAN_CREATE_ADMIN.getStatus())
+        .isEqualTo(HttpStatus.FORBIDDEN.value());
+    assertThat(AdminErrorCode.ONLY_ADMIN_CAN_CHANGE_ROLE.getStatus())
+        .isEqualTo(HttpStatus.FORBIDDEN.value());
     assertThat(AdminErrorCode.ADMIN_SUSPENDED.getStatus()).isEqualTo(HttpStatus.FORBIDDEN.value());
   }
 
   @Test
   void 비즈니스_규칙_에러코드는_422_상태코드를_가진다() {
-    assertThat(AdminErrorCode.CANNOT_CHANGE_OWN_ROLE.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
-    assertThat(AdminErrorCode.CANNOT_DELETE_LAST_ADMIN.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
-    assertThat(AdminErrorCode.CANNOT_DEACTIVATE_LAST_ADMIN.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
+    assertThat(AdminErrorCode.CANNOT_CHANGE_OWN_ROLE.getStatus())
+        .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
+    assertThat(AdminErrorCode.CANNOT_DELETE_LAST_ADMIN.getStatus())
+        .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
+    assertThat(AdminErrorCode.CANNOT_DEACTIVATE_LAST_ADMIN.getStatus())
+        .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
   }
 
   @Test

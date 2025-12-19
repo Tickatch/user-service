@@ -12,13 +12,10 @@ import java.util.UUID;
  * @param birthDate 생년월일 (선택)
  */
 public record UpdateCustomerProfileCommand(
-    UUID customerId,
-    String name,
-    String phone,
-    LocalDate birthDate
-) {
+    UUID customerId, String name, String phone, LocalDate birthDate) {
 
-  public static UpdateCustomerProfileCommand of(UUID customerId, String name, String phone, LocalDate birthDate) {
+  public static UpdateCustomerProfileCommand of(
+      UUID customerId, String name, String phone, LocalDate birthDate) {
     return new UpdateCustomerProfileCommand(customerId, name, phone, birthDate);
   }
 }

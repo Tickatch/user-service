@@ -31,14 +31,11 @@ import org.springframework.data.domain.Pageable;
 @DisplayName("CustomerQueryService 테스트")
 class CustomerQueryServiceTest {
 
-  @Autowired
-  private CustomerQueryService customerQueryService;
+  @Autowired private CustomerQueryService customerQueryService;
 
-  @Autowired
-  private CustomerRepository customerRepository;
+  @Autowired private CustomerRepository customerRepository;
 
-  @Autowired
-  private EntityManager entityManager;
+  @Autowired private EntityManager entityManager;
 
   private void flushAndClear() {
     entityManager.flush();
@@ -53,9 +50,13 @@ class CustomerQueryServiceTest {
     @DisplayName("ID로 고객을 조회한다")
     void getCustomer_success() {
       // given
-      Customer customer = Customer.create(
-          UUID.randomUUID(), "test@example.com", "홍길동", "010-1234-5678", LocalDate.of(1990, 1, 1)
-      );
+      Customer customer =
+          Customer.create(
+              UUID.randomUUID(),
+              "test@example.com",
+              "홍길동",
+              "010-1234-5678",
+              LocalDate.of(1990, 1, 1));
       customerRepository.save(customer);
       flushAndClear();
 
@@ -83,10 +84,12 @@ class CustomerQueryServiceTest {
       // when & then
       assertThatThrownBy(() -> customerQueryService.getCustomer(customerId))
           .isInstanceOf(CustomerException.class)
-          .satisfies(ex -> {
-            CustomerException customerException = (CustomerException) ex;
-            assertThat(customerException.getErrorCode()).isEqualTo(CustomerErrorCode.CUSTOMER_NOT_FOUND);
-          });
+          .satisfies(
+              ex -> {
+                CustomerException customerException = (CustomerException) ex;
+                assertThat(customerException.getErrorCode())
+                    .isEqualTo(CustomerErrorCode.CUSTOMER_NOT_FOUND);
+              });
     }
   }
 
@@ -99,9 +102,7 @@ class CustomerQueryServiceTest {
     void getCustomerByEmail_success() {
       // given
       String email = "test@example.com";
-      Customer customer = Customer.create(
-          UUID.randomUUID(), email, "홍길동", "010-1234-5678", null
-      );
+      Customer customer = Customer.create(UUID.randomUUID(), email, "홍길동", "010-1234-5678", null);
       customerRepository.save(customer);
       flushAndClear();
 
@@ -122,10 +123,12 @@ class CustomerQueryServiceTest {
       // when & then
       assertThatThrownBy(() -> customerQueryService.getCustomerByEmail(email))
           .isInstanceOf(CustomerException.class)
-          .satisfies(ex -> {
-            CustomerException customerException = (CustomerException) ex;
-            assertThat(customerException.getErrorCode()).isEqualTo(CustomerErrorCode.CUSTOMER_NOT_FOUND);
-          });
+          .satisfies(
+              ex -> {
+                CustomerException customerException = (CustomerException) ex;
+                assertThat(customerException.getErrorCode())
+                    .isEqualTo(CustomerErrorCode.CUSTOMER_NOT_FOUND);
+              });
     }
   }
 
@@ -137,17 +140,19 @@ class CustomerQueryServiceTest {
     @DisplayName("조건으로 고객을 검색한다")
     void searchCustomers_success() {
       // given
-      Customer customer1 = Customer.create(UUID.randomUUID(), "hong1@example.com", "홍길동", "010-1111-1111", null);
-      Customer customer2 = Customer.create(UUID.randomUUID(), "hong2@example.com", "홍길순", "010-2222-2222", null);
-      Customer customer3 = Customer.create(UUID.randomUUID(), "kim@example.com", "김철수", "010-3333-3333", null);
+      Customer customer1 =
+          Customer.create(UUID.randomUUID(), "hong1@example.com", "홍길동", "010-1111-1111", null);
+      Customer customer2 =
+          Customer.create(UUID.randomUUID(), "hong2@example.com", "홍길순", "010-2222-2222", null);
+      Customer customer3 =
+          Customer.create(UUID.randomUUID(), "kim@example.com", "김철수", "010-3333-3333", null);
       customerRepository.save(customer1);
       customerRepository.save(customer2);
       customerRepository.save(customer3);
       flushAndClear();
 
-      CustomerSearchRequest request = new CustomerSearchRequest(
-          null, "홍", null, UserStatus.ACTIVE, null
-      );
+      CustomerSearchRequest request =
+          new CustomerSearchRequest(null, "홍", null, UserStatus.ACTIVE, null);
       Pageable pageable = PageRequest.of(0, 10);
 
       // when
@@ -155,7 +160,8 @@ class CustomerQueryServiceTest {
 
       // then
       assertThat(result.getContent()).hasSize(2);
-      assertThat(result.getContent()).extracting(CustomerResponse::name)
+      assertThat(result.getContent())
+          .extracting(CustomerResponse::name)
           .containsExactlyInAnyOrder("홍길동", "홍길순");
     }
 
@@ -163,13 +169,13 @@ class CustomerQueryServiceTest {
     @DisplayName("검색 결과가 없으면 빈 페이지를 반환한다")
     void searchCustomers_empty() {
       // given
-      Customer customer = Customer.create(UUID.randomUUID(), "test@example.com", "홍길동", "010-1234-5678", null);
+      Customer customer =
+          Customer.create(UUID.randomUUID(), "test@example.com", "홍길동", "010-1234-5678", null);
       customerRepository.save(customer);
       flushAndClear();
 
-      CustomerSearchRequest request = new CustomerSearchRequest(
-          null, null, null, null, CustomerGrade.VIP
-      );
+      CustomerSearchRequest request =
+          new CustomerSearchRequest(null, null, null, null, CustomerGrade.VIP);
       Pageable pageable = PageRequest.of(0, 10);
 
       // when

@@ -24,7 +24,8 @@ class SettlementInfoTest {
 
     @Test
     void 유효한_정보로_생성한다() {
-      SettlementInfo settlementInfo = SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
+      SettlementInfo settlementInfo =
+          SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
       assertThat(settlementInfo.getBankCode()).isEqualTo(VALID_BANK_CODE);
       assertThat(settlementInfo.getAccountNumber()).isEqualTo(VALID_ACCOUNT_NUMBER);
       assertThat(settlementInfo.getAccountHolder()).isEqualTo(VALID_ACCOUNT_HOLDER);
@@ -32,7 +33,8 @@ class SettlementInfoTest {
 
     @Test
     void 계좌번호_하이픈을_제거한다() {
-      SettlementInfo settlementInfo = SettlementInfo.of(VALID_BANK_CODE, "1234-5678-901234", VALID_ACCOUNT_HOLDER);
+      SettlementInfo settlementInfo =
+          SettlementInfo.of(VALID_BANK_CODE, "1234-5678-901234", VALID_ACCOUNT_HOLDER);
       assertThat(settlementInfo.getAccountNumber()).isEqualTo("12345678901234");
     }
 
@@ -50,29 +52,34 @@ class SettlementInfoTest {
     @ParameterizedTest
     @NullAndEmptySource
     void 은행_코드가_null이거나_빈_값이면_예외가_발생한다(String invalidCode) {
-      assertThatThrownBy(() -> SettlementInfo.of(invalidCode, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER))
+      assertThatThrownBy(
+              () -> SettlementInfo.of(invalidCode, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BANK_CODE);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BANK_CODE);
+              });
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"001", "999", "abc", "00"})
     void 유효하지_않은_은행_코드는_예외가_발생한다(String invalidCode) {
-      assertThatThrownBy(() -> SettlementInfo.of(invalidCode, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER))
+      assertThatThrownBy(
+              () -> SettlementInfo.of(invalidCode, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BANK_CODE);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BANK_CODE);
+              });
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"004", "088", "020", "081", "090", "092"})
     void 유효한_은행_코드인_지_확인한다(String validCode) {
-      SettlementInfo settlementInfo = SettlementInfo.of(validCode, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
+      SettlementInfo settlementInfo =
+          SettlementInfo.of(validCode, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
       assertThat(settlementInfo.getBankCode()).isEqualTo(validCode);
     }
   }
@@ -83,29 +90,34 @@ class SettlementInfoTest {
     @ParameterizedTest
     @NullAndEmptySource
     void 계좌번호가_null이거나_빈_값이면_예외가_발생한다(String invalidNumber) {
-      assertThatThrownBy(() -> SettlementInfo.of(VALID_BANK_CODE, invalidNumber, VALID_ACCOUNT_HOLDER))
+      assertThatThrownBy(
+              () -> SettlementInfo.of(VALID_BANK_CODE, invalidNumber, VALID_ACCOUNT_HOLDER))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_ACCOUNT_NUMBER);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_ACCOUNT_NUMBER);
+              });
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"123456789", "123456789012345", "abcdefghij", "12-34-56"})
     void 유효하지_않은_계좌번호는_예외가_발생한다(String invalidNumber) {
-      assertThatThrownBy(() -> SettlementInfo.of(VALID_BANK_CODE, invalidNumber, VALID_ACCOUNT_HOLDER))
+      assertThatThrownBy(
+              () -> SettlementInfo.of(VALID_BANK_CODE, invalidNumber, VALID_ACCOUNT_HOLDER))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_ACCOUNT_NUMBER);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_ACCOUNT_NUMBER);
+              });
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"1234567890", "12345678901234", "1234-5678-9012"})
     void 유효한_계좌번호를_검증한다(String validNumber) {
-      SettlementInfo settlementInfo = SettlementInfo.of(VALID_BANK_CODE, validNumber, VALID_ACCOUNT_HOLDER);
+      SettlementInfo settlementInfo =
+          SettlementInfo.of(VALID_BANK_CODE, validNumber, VALID_ACCOUNT_HOLDER);
       assertThat(settlementInfo.getAccountNumber()).matches("^[0-9]{10,14}$");
     }
   }
@@ -117,12 +129,14 @@ class SettlementInfoTest {
     @NullAndEmptySource
     @ValueSource(strings = {"   ", "\t"})
     void 예금주명이_null이거나_빈_값이면_예외가_발생한다(String invalidHolder) {
-      assertThatThrownBy(() -> SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, invalidHolder))
+      assertThatThrownBy(
+              () -> SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, invalidHolder))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_ACCOUNT_HOLDER);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_ACCOUNT_HOLDER);
+              });
     }
 
     @Test
@@ -130,10 +144,11 @@ class SettlementInfoTest {
       String longHolder = "가".repeat(101);
       assertThatThrownBy(() -> SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, longHolder))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_ACCOUNT_HOLDER);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_ACCOUNT_HOLDER);
+              });
     }
   }
 
@@ -142,7 +157,8 @@ class SettlementInfoTest {
 
     @Test
     void 모든_필드_입력_시_isComplete에서_true가_반환된다() {
-      SettlementInfo settlementInfo = SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
+      SettlementInfo settlementInfo =
+          SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
       assertThat(settlementInfo.isComplete()).isTrue();
       assertThat(settlementInfo.isEmpty()).isFalse();
     }
@@ -160,7 +176,8 @@ class SettlementInfoTest {
 
     @Test
     void 계좌번호_마스킹을_한다() {
-      SettlementInfo settlementInfo = SettlementInfo.of(VALID_BANK_CODE, "12345678901234", VALID_ACCOUNT_HOLDER);
+      SettlementInfo settlementInfo =
+          SettlementInfo.of(VALID_BANK_CODE, "12345678901234", VALID_ACCOUNT_HOLDER);
       String masked = settlementInfo.getMaskedAccountNumber();
       assertThat(masked).isEqualTo("1234**********");
     }
@@ -171,7 +188,8 @@ class SettlementInfoTest {
 
     @Test
     void 정산_정보를_수정한다() {
-      SettlementInfo original = SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
+      SettlementInfo original =
+          SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
       SettlementInfo updated = original.update("088", "09876543210987", "김철수");
       assertThat(updated.getBankCode()).isEqualTo("088");
       assertThat(updated.getAccountHolder()).isEqualTo("김철수");
@@ -185,8 +203,10 @@ class SettlementInfoTest {
 
     @Test
     void 같은_값이면_동등하다() {
-      SettlementInfo info1 = SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
-      SettlementInfo info2 = SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
+      SettlementInfo info1 =
+          SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
+      SettlementInfo info2 =
+          SettlementInfo.of(VALID_BANK_CODE, VALID_ACCOUNT_NUMBER, VALID_ACCOUNT_HOLDER);
       assertThat(info1).isEqualTo(info2);
       assertThat(info1.hashCode()).isEqualTo(info2.hashCode());
     }

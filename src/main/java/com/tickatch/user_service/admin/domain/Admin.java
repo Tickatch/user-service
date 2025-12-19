@@ -23,8 +23,7 @@ import lombok.NoArgsConstructor;
 /**
  * 관리자 엔티티 (Aggregate Root).
  *
- * <p>시스템 관리자를 나타낸다.
- * BaseUser를 상속하지 않고 별도로 구현 (AdminProfile 사용).
+ * <p>시스템 관리자를 나타낸다. BaseUser를 상속하지 않고 별도로 구현 (AdminProfile 사용).
  *
  * @author Tickatch
  * @since 1.0.0
@@ -35,35 +34,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Admin extends AbstractAuditEntity {
 
-  /**
-   * 관리자 ID (Auth Service의 authId와 동일).
-   */
+  /** 관리자 ID (Auth Service의 authId와 동일). */
   @Id
   @Column(name = "id", nullable = false, updatable = false)
   private UUID id;
 
-  /**
-   * 이메일 (조회용, 수정 불가).
-   */
+  /** 이메일 (조회용, 수정 불가). */
   @Column(name = "email", nullable = false, length = 255)
   private String email;
 
-  /**
-   * 관리자 프로필.
-   */
-  @Embedded
-  private AdminProfile profile;
+  /** 관리자 프로필. */
+  @Embedded private AdminProfile profile;
 
-  /**
-   * 관리자 상태.
-   */
+  /** 관리자 상태. */
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 20)
   private UserStatus status;
 
-  /**
-   * 관리자 역할.
-   */
+  /** 관리자 역할. */
   @Enumerated(EnumType.STRING)
   @Column(name = "admin_role", nullable = false, length = 20)
   private AdminRole adminRole;
@@ -87,8 +75,13 @@ public class Admin extends AbstractAuditEntity {
    * @param adminRole 역할
    * @return 생성된 Admin
    */
-  public static Admin create(UUID authId, String email, String name, String phone,
-      String department, AdminRole adminRole) {
+  public static Admin create(
+      UUID authId,
+      String email,
+      String name,
+      String phone,
+      String department,
+      AdminRole adminRole) {
     AdminProfile profile = AdminProfile.of(name, phone, department);
     return new Admin(authId, email, profile, adminRole);
   }
@@ -121,23 +114,17 @@ public class Admin extends AbstractAuditEntity {
     this.adminRole = newRole;
   }
 
-  /**
-   * 관리자 정지.
-   */
+  /** 관리자 정지. */
   public void suspend() {
     this.status = UserStatus.SUSPENDED;
   }
 
-  /**
-   * 정지 해제.
-   */
+  /** 정지 해제. */
   public void activate() {
     this.status = UserStatus.ACTIVE;
   }
 
-  /**
-   * 탈퇴 처리.
-   */
+  /** 탈퇴 처리. */
   public void withdraw() {
     this.status = UserStatus.WITHDRAWN;
   }

@@ -23,8 +23,7 @@ public record CreateSellerCommand(
     String businessName,
     String businessNumber,
     String representativeName,
-    Address businessAddress
-) {
+    Address businessAddress) {
 
   public static CreateSellerCommand of(
       UUID authId,
@@ -34,10 +33,15 @@ public record CreateSellerCommand(
       String businessName,
       String businessNumber,
       String representativeName,
-      Address businessAddress
-  ) {
+      Address businessAddress) {
     return new CreateSellerCommand(
-        authId, email, name, phone, businessName, businessNumber, representativeName, businessAddress
-    );
+        authId,
+        email,
+        name,
+        phone,
+        businessName,
+        businessNumber,
+        representativeName,
+        businessAddress);
   }
 }

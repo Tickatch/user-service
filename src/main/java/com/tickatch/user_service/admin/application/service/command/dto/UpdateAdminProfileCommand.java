@@ -11,13 +11,10 @@ import java.util.UUID;
  * @param department 부서 (선택)
  */
 public record UpdateAdminProfileCommand(
-    UUID adminId,
-    String name,
-    String phone,
-    String department
-) {
+    UUID adminId, String name, String phone, String department) {
 
-  public static UpdateAdminProfileCommand of(UUID adminId, String name, String phone, String department) {
+  public static UpdateAdminProfileCommand of(
+      UUID adminId, String name, String phone, String department) {
     return new UpdateAdminProfileCommand(adminId, name, phone, department);
   }
 }

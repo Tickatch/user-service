@@ -13,19 +13,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum SellerStatus {
 
-  /**
-   * 승인 대기.
-   */
+  /** 승인 대기. */
   PENDING("승인 대기 상태"),
 
-  /**
-   * 승인 완료.
-   */
+  /** 승인 완료. */
   APPROVED("승인 완료 상태"),
 
-  /**
-   * 승인 거절.
-   */
+  /** 승인 거절. */
   REJECTED("승인 거절 상태");
 
   private final String description;

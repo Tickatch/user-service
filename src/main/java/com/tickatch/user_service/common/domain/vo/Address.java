@@ -110,9 +110,10 @@ public class Address {
 
   private static void validate(String zipCode, String address1, String address2) {
     // 모두 비어있으면 유효 (선택 필드)
-    boolean allEmpty = (zipCode == null || zipCode.isBlank())
-        && (address1 == null || address1.isBlank())
-        && (address2 == null || address2.isBlank());
+    boolean allEmpty =
+        (zipCode == null || zipCode.isBlank())
+            && (address1 == null || address1.isBlank())
+            && (address2 == null || address2.isBlank());
     if (allEmpty) {
       return;
     }

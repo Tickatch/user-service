@@ -52,10 +52,11 @@ class AdminProfileTest {
     void 이름이_null이거나_빈_값이면_UserExcetpion이_발생한다(String invalidName) {
       assertThatThrownBy(() -> AdminProfile.of(invalidName, "01012345678", "운영팀"))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_NAME);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_NAME);
+              });
     }
 
     @Test
@@ -63,10 +64,11 @@ class AdminProfileTest {
       String longName = "가".repeat(51);
       assertThatThrownBy(() -> AdminProfile.of(longName, "01012345678", "운영팀"))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_NAME);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_NAME);
+              });
     }
   }
 
@@ -78,10 +80,11 @@ class AdminProfileTest {
     void 유효하지_않은_연락처는_UserException가_발생한다(String invalidPhone) {
       assertThatThrownBy(() -> AdminProfile.of("관리자", invalidPhone, "운영팀"))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_PHONE);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_PHONE);
+              });
     }
   }
 
@@ -93,10 +96,11 @@ class AdminProfileTest {
       String longDepartment = "가".repeat(101);
       assertThatThrownBy(() -> AdminProfile.of("관리자", "01012345678", longDepartment))
           .isInstanceOf(AdminException.class)
-          .satisfies(e -> {
-            AdminException ae = (AdminException) e;
-            assertThat(ae.getErrorCode()).isEqualTo(AdminErrorCode.INVALID_DEPARTMENT);
-          });
+          .satisfies(
+              e -> {
+                AdminException ae = (AdminException) e;
+                assertThat(ae.getErrorCode()).isEqualTo(AdminErrorCode.INVALID_DEPARTMENT);
+              });
     }
 
     @Test

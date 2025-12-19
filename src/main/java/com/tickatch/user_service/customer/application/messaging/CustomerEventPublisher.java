@@ -5,8 +5,8 @@ import com.tickatch.user_service.customer.domain.Customer;
 /**
  * 고객 도메인 이벤트 발행 인터페이스.
  *
- * <p>Application 레이어에서 정의하고, Infrastructure 레이어에서 구현한다.
- * 이를 통해 Application은 메시징 기술(RabbitMQ, Kafka 등)에 의존하지 않는다.
+ * <p>Application 레이어에서 정의하고, Infrastructure 레이어에서 구현한다. 이를 통해 Application은 메시징 기술(RabbitMQ, Kafka
+ * 등)에 의존하지 않는다.
  *
  * @author Tickatch
  * @since 1.0.0

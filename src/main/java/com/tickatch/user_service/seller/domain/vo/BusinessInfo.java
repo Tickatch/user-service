@@ -34,36 +34,36 @@ public class BusinessInfo {
   private static final int MAX_REPRESENTATIVE_NAME_LENGTH = 100;
   private static final Pattern BUSINESS_NUMBER_PATTERN = Pattern.compile("^[0-9]{10}$");
 
-  /**
-   * 상호명.
-   */
+  /** 상호명. */
   @Column(name = "business_name", nullable = false, length = 200)
   private String businessName;
 
-  /**
-   * 사업자등록번호 (10자리 숫자).
-   */
+  /** 사업자등록번호 (10자리 숫자). */
   @Column(name = "business_number", nullable = false, length = 20)
   private String businessNumber;
 
-  /**
-   * 대표자명.
-   */
+  /** 대표자명. */
   @Column(name = "representative_name", nullable = false, length = 100)
   private String representativeName;
 
-  /**
-   * 사업장 주소.
-   */
+  /** 사업장 주소. */
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "zipCode", column = @Column(name = "business_zip_code", length = 10)),
-      @AttributeOverride(name = "address1", column = @Column(name = "business_address1", length = 200)),
-      @AttributeOverride(name = "address2", column = @Column(name = "business_address2", length = 200))
+    @AttributeOverride(name = "zipCode", column = @Column(name = "business_zip_code", length = 10)),
+    @AttributeOverride(
+        name = "address1",
+        column = @Column(name = "business_address1", length = 200)),
+    @AttributeOverride(
+        name = "address2",
+        column = @Column(name = "business_address2", length = 200))
   })
   private Address businessAddress;
 
-  private BusinessInfo(String businessName, String businessNumber, String representativeName, Address businessAddress) {
+  private BusinessInfo(
+      String businessName,
+      String businessNumber,
+      String representativeName,
+      Address businessAddress) {
     this.businessName = businessName;
     this.businessNumber = businessNumber;
     this.representativeName = representativeName;
@@ -80,8 +80,11 @@ public class BusinessInfo {
    * @return BusinessInfo 인스턴스
    * @throws SellerException 유효성 검증 실패 시
    */
-  public static BusinessInfo of(String businessName, String businessNumber,
-      String representativeName, Address businessAddress) {
+  public static BusinessInfo of(
+      String businessName,
+      String businessNumber,
+      String representativeName,
+      Address businessAddress) {
     validateBusinessName(businessName);
     validateBusinessNumber(businessNumber);
     validateRepresentativeName(representativeName);
@@ -90,7 +93,8 @@ public class BusinessInfo {
     String normalizedNumber = normalizeBusinessNumber(businessNumber);
     Address address = businessAddress != null ? businessAddress : Address.empty();
 
-    return new BusinessInfo(businessName.trim(), normalizedNumber, representativeName.trim(), address);
+    return new BusinessInfo(
+        businessName.trim(), normalizedNumber, representativeName.trim(), address);
   }
 
   /**
@@ -102,8 +106,11 @@ public class BusinessInfo {
    * @param businessAddress 새 사업장 주소
    * @return 수정된 BusinessInfo
    */
-  public BusinessInfo update(String businessName, String businessNumber,
-      String representativeName, Address businessAddress) {
+  public BusinessInfo update(
+      String businessName,
+      String businessNumber,
+      String representativeName,
+      Address businessAddress) {
     return BusinessInfo.of(businessName, businessNumber, representativeName, businessAddress);
   }
 
@@ -157,8 +164,10 @@ public class BusinessInfo {
     if (businessNumber == null || businessNumber.length() != 10) {
       return businessNumber;
     }
-    return businessNumber.substring(0, 3) + "-"
-        + businessNumber.substring(3, 5) + "-"
+    return businessNumber.substring(0, 3)
+        + "-"
+        + businessNumber.substring(3, 5)
+        + "-"
         + businessNumber.substring(5);
   }
 }

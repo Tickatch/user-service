@@ -44,7 +44,8 @@ public enum AdminErrorCode implements ErrorCode {
   // ========================================
   CANNOT_CHANGE_OWN_ROLE(HttpStatus.UNPROCESSABLE_ENTITY.value(), "CANNOT_CHANGE_OWN_ROLE"),
   CANNOT_DELETE_LAST_ADMIN(HttpStatus.UNPROCESSABLE_ENTITY.value(), "CANNOT_DELETE_LAST_ADMIN"),
-  CANNOT_DEACTIVATE_LAST_ADMIN(HttpStatus.UNPROCESSABLE_ENTITY.value(), "CANNOT_DEACTIVATE_LAST_ADMIN");
+  CANNOT_DEACTIVATE_LAST_ADMIN(
+      HttpStatus.UNPROCESSABLE_ENTITY.value(), "CANNOT_DEACTIVATE_LAST_ADMIN");
 
   private final int status;
   private final String code;

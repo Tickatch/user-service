@@ -13,19 +13,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UserStatus {
 
-  /**
-   * 활성 상태.
-   */
+  /** 활성 상태. */
   ACTIVE("활성"),
 
-  /**
-   * 정지 상태.
-   */
+  /** 정지 상태. */
   SUSPENDED("정지"),
 
-  /**
-   * 탈퇴 상태.
-   */
+  /** 탈퇴 상태. */
   WITHDRAWN("탈퇴");
 
   private final String description;

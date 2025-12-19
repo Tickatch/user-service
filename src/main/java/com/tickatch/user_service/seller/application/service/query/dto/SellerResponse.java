@@ -6,9 +6,7 @@ import com.tickatch.user_service.seller.domain.vo.SellerStatus;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * 판매자 조회 응답 DTO.
- */
+/** 판매자 조회 응답 DTO. */
 public record SellerResponse(
     UUID id,
     String email,
@@ -24,8 +22,7 @@ public record SellerResponse(
     String approvedBy,
     String rejectedReason,
     LocalDateTime createdAt,
-    LocalDateTime updatedAt
-) {
+    LocalDateTime updatedAt) {
 
   public static SellerResponse from(Seller seller) {
     return new SellerResponse(
@@ -43,7 +40,6 @@ public record SellerResponse(
         seller.getApprovedBy(),
         seller.getRejectedReason(),
         seller.getCreatedAt(),
-        seller.getUpdatedAt()
-    );
+        seller.getUpdatedAt());
   }
 }

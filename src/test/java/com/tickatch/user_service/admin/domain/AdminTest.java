@@ -97,7 +97,9 @@ class AdminTest {
     @Test
     void ADMIN이_다른_관리자의_역할을_변경한다() {
       Admin superAdmin = createSuperAdmin();
-      Admin targetAdmin = Admin.create(UUID.randomUUID(), "target@test.com", "대상", "01011112222", "운영팀", AdminRole.MANAGER);
+      Admin targetAdmin =
+          Admin.create(
+              UUID.randomUUID(), "target@test.com", "대상", "01011112222", "운영팀", AdminRole.MANAGER);
       targetAdmin.changeRole(AdminRole.ADMIN, superAdmin);
       assertThat(targetAdmin.getAdminRole()).isEqualTo(AdminRole.ADMIN);
       assertThat(targetAdmin.isAdmin()).isTrue();
@@ -106,13 +108,16 @@ class AdminTest {
     @Test
     void MANAGER가_역할_변경_시_예외가_발생한다() {
       Admin managerAdmin = createManagerAdmin();
-      Admin targetAdmin = Admin.create(UUID.randomUUID(), "target@test.com", "대상", "01011112222", "운영팀", AdminRole.MANAGER);
+      Admin targetAdmin =
+          Admin.create(
+              UUID.randomUUID(), "target@test.com", "대상", "01011112222", "운영팀", AdminRole.MANAGER);
       assertThatThrownBy(() -> targetAdmin.changeRole(AdminRole.ADMIN, managerAdmin))
           .isInstanceOf(AdminException.class)
-          .satisfies(e -> {
-            AdminException ae = (AdminException) e;
-            assertThat(ae.getErrorCode()).isEqualTo(AdminErrorCode.ONLY_ADMIN_CAN_CHANGE_ROLE);
-          });
+          .satisfies(
+              e -> {
+                AdminException ae = (AdminException) e;
+                assertThat(ae.getErrorCode()).isEqualTo(AdminErrorCode.ONLY_ADMIN_CAN_CHANGE_ROLE);
+              });
     }
 
     @Test
@@ -120,10 +125,11 @@ class AdminTest {
       Admin superAdmin = createSuperAdmin();
       assertThatThrownBy(() -> superAdmin.changeRole(AdminRole.MANAGER, superAdmin))
           .isInstanceOf(AdminException.class)
-          .satisfies(e -> {
-            AdminException ae = (AdminException) e;
-            assertThat(ae.getErrorCode()).isEqualTo(AdminErrorCode.CANNOT_CHANGE_OWN_ROLE);
-          });
+          .satisfies(
+              e -> {
+                AdminException ae = (AdminException) e;
+                assertThat(ae.getErrorCode()).isEqualTo(AdminErrorCode.CANNOT_CHANGE_OWN_ROLE);
+              });
     }
   }
 

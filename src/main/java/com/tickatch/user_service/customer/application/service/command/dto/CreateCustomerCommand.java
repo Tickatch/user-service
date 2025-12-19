@@ -13,14 +13,10 @@ import java.util.UUID;
  * @param birthDate 생년월일 (선택)
  */
 public record CreateCustomerCommand(
-    UUID authId,
-    String email,
-    String name,
-    String phone,
-    LocalDate birthDate
-) {
+    UUID authId, String email, String name, String phone, LocalDate birthDate) {
 
-  public static CreateCustomerCommand of(UUID authId, String email, String name, String phone, LocalDate birthDate) {
+  public static CreateCustomerCommand of(
+      UUID authId, String email, String name, String phone, LocalDate birthDate) {
     return new CreateCustomerCommand(authId, email, name, phone, birthDate);
   }
 }

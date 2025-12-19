@@ -13,14 +13,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AdminRole {
 
-  /**
-   * 매니저 (일반 관리자).
-   */
+  /** 매니저 (일반 관리자). */
   MANAGER("일반 관리자", 1),
 
-  /**
-   * 어드민 (최고 관리자).
-   */
+  /** 어드민 (최고 관리자). */
   ADMIN("최고 관리자", 2);
 
   private final String description;

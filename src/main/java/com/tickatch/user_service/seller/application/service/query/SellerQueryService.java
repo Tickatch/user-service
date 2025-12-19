@@ -36,8 +36,10 @@ public class SellerQueryService {
    * @throws SellerException 판매자를 찾을 수 없는 경우
    */
   public SellerResponse getSeller(UUID sellerId) {
-    Seller seller = sellerRepository.findById(sellerId)
-        .orElseThrow(() -> new SellerException(SellerErrorCode.SELLER_NOT_FOUND));
+    Seller seller =
+        sellerRepository
+            .findById(sellerId)
+            .orElseThrow(() -> new SellerException(SellerErrorCode.SELLER_NOT_FOUND));
     return SellerResponse.from(seller);
   }
 
@@ -49,8 +51,10 @@ public class SellerQueryService {
    * @throws SellerException 판매자를 찾을 수 없는 경우
    */
   public SellerResponse getSellerByEmail(String email) {
-    Seller seller = sellerRepository.findByEmail(email)
-        .orElseThrow(() -> new SellerException(SellerErrorCode.SELLER_NOT_FOUND));
+    Seller seller =
+        sellerRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new SellerException(SellerErrorCode.SELLER_NOT_FOUND));
     return SellerResponse.from(seller);
   }
 
@@ -62,7 +66,8 @@ public class SellerQueryService {
    * @return 페이징된 판매자 응답 목록
    */
   public Page<SellerResponse> searchSellers(SellerSearchRequest request, Pageable pageable) {
-    return sellerRepository.findAllByCondition(request.toCondition(), pageable)
+    return sellerRepository
+        .findAllByCondition(request.toCondition(), pageable)
         .map(SellerResponse::from);
   }
 

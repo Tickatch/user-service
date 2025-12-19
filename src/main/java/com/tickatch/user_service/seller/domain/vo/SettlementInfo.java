@@ -29,49 +29,42 @@ public class SettlementInfo {
   private static final int MAX_ACCOUNT_HOLDER_LENGTH = 100;
   private static final Pattern ACCOUNT_NUMBER_PATTERN = Pattern.compile("^[0-9]{10,14}$");
 
-  /**
-   * 유효한 은행 코드 목록.
-   */
-  private static final Set<String> VALID_BANK_CODES = Set.of(
-      "004", // KB국민
-      "088", // 신한
-      "020", // 우리
-      "081", // 하나
-      "003", // IBK기업
-      "011", // NH농협
-      "023", // SC제일
-      "027", // 한국씨티
-      "039", // 경남
-      "034", // 광주
-      "031", // 대구
-      "032", // 부산
-      "037", // 전북
-      "035", // 제주
-      "007", // 수협
-      "045", // 새마을금고
-      "048", // 신협
-      "064", // 산림조합
-      "071", // 우체국
-      "089", // K뱅크
-      "090", // 카카오뱅크
-      "092"  // 토스뱅크
-  );
+  /** 유효한 은행 코드 목록. */
+  private static final Set<String> VALID_BANK_CODES =
+      Set.of(
+          "004", // KB국민
+          "088", // 신한
+          "020", // 우리
+          "081", // 하나
+          "003", // IBK기업
+          "011", // NH농협
+          "023", // SC제일
+          "027", // 한국씨티
+          "039", // 경남
+          "034", // 광주
+          "031", // 대구
+          "032", // 부산
+          "037", // 전북
+          "035", // 제주
+          "007", // 수협
+          "045", // 새마을금고
+          "048", // 신협
+          "064", // 산림조합
+          "071", // 우체국
+          "089", // K뱅크
+          "090", // 카카오뱅크
+          "092" // 토스뱅크
+          );
 
-  /**
-   * 은행 코드.
-   */
+  /** 은행 코드. */
   @Column(name = "bank_code", length = 10)
   private String bankCode;
 
-  /**
-   * 계좌번호.
-   */
+  /** 계좌번호. */
   @Column(name = "account_number", length = 50)
   private String accountNumber;
 
-  /**
-   * 예금주명.
-   */
+  /** 예금주명. */
   @Column(name = "account_holder", length = 100)
   private String accountHolder;
 
@@ -137,9 +130,12 @@ public class SettlementInfo {
    * @return 완전하면 true
    */
   public boolean isComplete() {
-    return bankCode != null && !bankCode.isBlank()
-        && accountNumber != null && !accountNumber.isBlank()
-        && accountHolder != null && !accountHolder.isBlank();
+    return bankCode != null
+        && !bankCode.isBlank()
+        && accountNumber != null
+        && !accountNumber.isBlank()
+        && accountHolder != null
+        && !accountHolder.isBlank();
   }
 
   private static void validateBankCode(String bankCode) {

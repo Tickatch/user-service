@@ -30,14 +30,11 @@ import org.springframework.data.domain.Pageable;
 @DisplayName("SellerQueryService 테스트")
 class SellerQueryServiceTest {
 
-  @Autowired
-  private SellerQueryService sellerQueryService;
+  @Autowired private SellerQueryService sellerQueryService;
 
-  @Autowired
-  private SellerRepository sellerRepository;
+  @Autowired private SellerRepository sellerRepository;
 
-  @Autowired
-  private EntityManager entityManager;
+  @Autowired private EntityManager entityManager;
 
   private void flushAndClear() {
     entityManager.flush();
@@ -52,10 +49,16 @@ class SellerQueryServiceTest {
     @DisplayName("ID로 판매자를 조회한다")
     void getSeller_success() {
       // given
-      Seller seller = Seller.create(
-          UUID.randomUUID(), "seller@example.com", "김판매", "010-1234-5678",
-          "판매상점", "1234567890", "김대표", null
-      );
+      Seller seller =
+          Seller.create(
+              UUID.randomUUID(),
+              "seller@example.com",
+              "김판매",
+              "010-1234-5678",
+              "판매상점",
+              "1234567890",
+              "김대표",
+              null);
       sellerRepository.save(seller);
       flushAndClear();
 
@@ -83,10 +86,12 @@ class SellerQueryServiceTest {
       // when & then
       assertThatThrownBy(() -> sellerQueryService.getSeller(sellerId))
           .isInstanceOf(SellerException.class)
-          .satisfies(ex -> {
-            SellerException sellerException = (SellerException) ex;
-            assertThat(sellerException.getErrorCode()).isEqualTo(SellerErrorCode.SELLER_NOT_FOUND);
-          });
+          .satisfies(
+              ex -> {
+                SellerException sellerException = (SellerException) ex;
+                assertThat(sellerException.getErrorCode())
+                    .isEqualTo(SellerErrorCode.SELLER_NOT_FOUND);
+              });
     }
   }
 
@@ -99,10 +104,9 @@ class SellerQueryServiceTest {
     void getSellerByEmail_success() {
       // given
       String email = "seller@example.com";
-      Seller seller = Seller.create(
-          UUID.randomUUID(), email, "김판매", "010-1234-5678",
-          "판매상점", "1234567890", "김대표", null
-      );
+      Seller seller =
+          Seller.create(
+              UUID.randomUUID(), email, "김판매", "010-1234-5678", "판매상점", "1234567890", "김대표", null);
       sellerRepository.save(seller);
       flushAndClear();
 
@@ -123,10 +127,12 @@ class SellerQueryServiceTest {
       // when & then
       assertThatThrownBy(() -> sellerQueryService.getSellerByEmail(email))
           .isInstanceOf(SellerException.class)
-          .satisfies(ex -> {
-            SellerException sellerException = (SellerException) ex;
-            assertThat(sellerException.getErrorCode()).isEqualTo(SellerErrorCode.SELLER_NOT_FOUND);
-          });
+          .satisfies(
+              ex -> {
+                SellerException sellerException = (SellerException) ex;
+                assertThat(sellerException.getErrorCode())
+                    .isEqualTo(SellerErrorCode.SELLER_NOT_FOUND);
+              });
     }
   }
 
@@ -138,17 +144,32 @@ class SellerQueryServiceTest {
     @DisplayName("조건으로 판매자를 검색한다")
     void searchSellers_success() {
       // given
-      Seller seller1 = Seller.create(UUID.randomUUID(), "seller1@example.com", "김판매", "010-1111-1111",
-          "판매상점1", "1234567890", "김대표", null);
-      Seller seller2 = Seller.create(UUID.randomUUID(), "seller2@example.com", "이판매", "010-2222-2222",
-          "판매상점2", "0987654321", "이대표", null);
+      Seller seller1 =
+          Seller.create(
+              UUID.randomUUID(),
+              "seller1@example.com",
+              "김판매",
+              "010-1111-1111",
+              "판매상점1",
+              "1234567890",
+              "김대표",
+              null);
+      Seller seller2 =
+          Seller.create(
+              UUID.randomUUID(),
+              "seller2@example.com",
+              "이판매",
+              "010-2222-2222",
+              "판매상점2",
+              "0987654321",
+              "이대표",
+              null);
       sellerRepository.save(seller1);
       sellerRepository.save(seller2);
       flushAndClear();
 
-      SellerSearchRequest request = new SellerSearchRequest(
-          null, null, UserStatus.ACTIVE, SellerStatus.PENDING, null, null
-      );
+      SellerSearchRequest request =
+          new SellerSearchRequest(null, null, UserStatus.ACTIVE, SellerStatus.PENDING, null, null);
       Pageable pageable = PageRequest.of(0, 10);
 
       // when
@@ -156,7 +177,8 @@ class SellerQueryServiceTest {
 
       // then
       assertThat(result.getContent()).hasSize(2);
-      assertThat(result.getContent()).extracting(SellerResponse::businessName)
+      assertThat(result.getContent())
+          .extracting(SellerResponse::businessName)
           .containsExactlyInAnyOrder("판매상점1", "판매상점2");
     }
 
@@ -164,18 +186,33 @@ class SellerQueryServiceTest {
     @DisplayName("승인된 판매자만 검색한다")
     void searchSellers_approvedOnly() {
       // given
-      Seller pending = Seller.create(UUID.randomUUID(), "pending@example.com", "대기판매자", "010-1111-1111",
-          "대기상점", "1111111111", "대기대표", null);
-      Seller approved = Seller.create(UUID.randomUUID(), "approved@example.com", "승인판매자", "010-2222-2222",
-          "승인상점", "2222222222", "승인대표", null);
+      Seller pending =
+          Seller.create(
+              UUID.randomUUID(),
+              "pending@example.com",
+              "대기판매자",
+              "010-1111-1111",
+              "대기상점",
+              "1111111111",
+              "대기대표",
+              null);
+      Seller approved =
+          Seller.create(
+              UUID.randomUUID(),
+              "approved@example.com",
+              "승인판매자",
+              "010-2222-2222",
+              "승인상점",
+              "2222222222",
+              "승인대표",
+              null);
       approved.approve("admin");
       sellerRepository.save(pending);
       sellerRepository.save(approved);
       flushAndClear();
 
-      SellerSearchRequest request = new SellerSearchRequest(
-          null, null, null, SellerStatus.APPROVED, null, null
-      );
+      SellerSearchRequest request =
+          new SellerSearchRequest(null, null, null, SellerStatus.APPROVED, null, null);
       Pageable pageable = PageRequest.of(0, 10);
 
       // when
@@ -196,8 +233,9 @@ class SellerQueryServiceTest {
     void existsByEmail_true() {
       // given
       String email = "exists@example.com";
-      Seller seller = Seller.create(UUID.randomUUID(), email, "김판매", "010-1234-5678",
-          "판매상점", "1234567890", "김대표", null);
+      Seller seller =
+          Seller.create(
+              UUID.randomUUID(), email, "김판매", "010-1234-5678", "판매상점", "1234567890", "김대표", null);
       sellerRepository.save(seller);
       flushAndClear();
 
@@ -231,8 +269,16 @@ class SellerQueryServiceTest {
     void existsByBusinessNumber_true() {
       // given
       String businessNumber = "1234567890";
-      Seller seller = Seller.create(UUID.randomUUID(), "seller@example.com", "김판매", "010-1234-5678",
-          "판매상점", businessNumber, "김대표", null);
+      Seller seller =
+          Seller.create(
+              UUID.randomUUID(),
+              "seller@example.com",
+              "김판매",
+              "010-1234-5678",
+              "판매상점",
+              businessNumber,
+              "김대표",
+              null);
       sellerRepository.save(seller);
       flushAndClear();
 

@@ -49,10 +49,11 @@ class UserProfileTest {
     void 이름이_null이거나_빈_값이면_예외가_발생한다(String invalidName) {
       assertThatThrownBy(() -> UserProfile.of(invalidName, "01012345678"))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_NAME);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_NAME);
+              });
     }
 
     @Test
@@ -60,10 +61,11 @@ class UserProfileTest {
       String longName = "가".repeat(51);
       assertThatThrownBy(() -> UserProfile.of(longName, "01012345678"))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_NAME);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_NAME);
+              });
     }
 
     @Test
@@ -89,10 +91,11 @@ class UserProfileTest {
     void 유효하지_않은_연락처_형식이다(String invalidPhone) {
       assertThatThrownBy(() -> UserProfile.of("홍길동", invalidPhone))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_PHONE);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_PHONE);
+              });
     }
   }
 

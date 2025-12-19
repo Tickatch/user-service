@@ -11,18 +11,10 @@ import java.util.UUID;
  * @param accountHolder 예금주명
  */
 public record UpdateSettlementInfoCommand(
-    UUID sellerId,
-    String bankCode,
-    String accountNumber,
-    String accountHolder
-) {
+    UUID sellerId, String bankCode, String accountNumber, String accountHolder) {
 
   public static UpdateSettlementInfoCommand of(
-      UUID sellerId,
-      String bankCode,
-      String accountNumber,
-      String accountHolder
-  ) {
+      UUID sellerId, String bankCode, String accountNumber, String accountHolder) {
     return new UpdateSettlementInfoCommand(sellerId, bankCode, accountNumber, accountHolder);
   }
 }

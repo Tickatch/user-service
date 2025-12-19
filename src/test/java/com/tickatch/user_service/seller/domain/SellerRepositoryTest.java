@@ -26,8 +26,7 @@ import org.springframework.data.domain.Sort;
 @DisplayName("SellerRepository 테스트")
 class SellerRepositoryTest {
 
-  @Autowired
-  private SellerRepository sellerRepository;
+  @Autowired private SellerRepository sellerRepository;
 
   private Seller seller1;
   private Seller seller2;
@@ -37,38 +36,38 @@ class SellerRepositoryTest {
   void setUp() {
     Address address = Address.of("12345", "서울시 강남구", "테헤란로 123");
 
-    seller1 = Seller.create(
-        UUID.randomUUID(),
-        "seller1@test.com",
-        "판매자1",
-        "01012345678",
-        "테스트상점1",
-        "1234567890",
-        "홍길동",
-        address
-    );
+    seller1 =
+        Seller.create(
+            UUID.randomUUID(),
+            "seller1@test.com",
+            "판매자1",
+            "01012345678",
+            "테스트상점1",
+            "1234567890",
+            "홍길동",
+            address);
 
-    seller2 = Seller.create(
-        UUID.randomUUID(),
-        "seller2@test.com",
-        "판매자2",
-        "01087654321",
-        "테스트상점2",
-        "0987654321",
-        "김철수",
-        address
-    );
+    seller2 =
+        Seller.create(
+            UUID.randomUUID(),
+            "seller2@test.com",
+            "판매자2",
+            "01087654321",
+            "테스트상점2",
+            "0987654321",
+            "김철수",
+            address);
 
-    seller3 = Seller.create(
-        UUID.randomUUID(),
-        "seller3@test.com",
-        "판매자3",
-        "01011112222",
-        "우수상점",
-        "1111111111",
-        "이영희",
-        address
-    );
+    seller3 =
+        Seller.create(
+            UUID.randomUUID(),
+            "seller3@test.com",
+            "판매자3",
+            "01011112222",
+            "우수상점",
+            "1111111111",
+            "이영희",
+            address);
   }
 
   @Nested
@@ -187,9 +186,7 @@ class SellerRepositoryTest {
 
     @Test
     void 이메일로_검색한다() {
-      SellerSearchCondition condition = SellerSearchCondition.builder()
-          .email("seller1")
-          .build();
+      SellerSearchCondition condition = SellerSearchCondition.builder().email("seller1").build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Seller> result = sellerRepository.findAllByCondition(condition, pageable);
@@ -200,9 +197,8 @@ class SellerRepositoryTest {
 
     @Test
     void 판매자의_PENDING_상태로_검색한다() {
-      SellerSearchCondition condition = SellerSearchCondition.builder()
-          .sellerStatus(SellerStatus.PENDING)
-          .build();
+      SellerSearchCondition condition =
+          SellerSearchCondition.builder().sellerStatus(SellerStatus.PENDING).build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Seller> result = sellerRepository.findAllByCondition(condition, pageable);
@@ -213,9 +209,8 @@ class SellerRepositoryTest {
 
     @Test
     void 판매자의_APPROVED_상태로_검색한다() {
-      SellerSearchCondition condition = SellerSearchCondition.builder()
-          .sellerStatus(SellerStatus.APPROVED)
-          .build();
+      SellerSearchCondition condition =
+          SellerSearchCondition.builder().sellerStatus(SellerStatus.APPROVED).build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Seller> result = sellerRepository.findAllByCondition(condition, pageable);
@@ -226,9 +221,8 @@ class SellerRepositoryTest {
 
     @Test
     void 판매자의_REJECTED_상태로_검색한다() {
-      SellerSearchCondition condition = SellerSearchCondition.builder()
-          .sellerStatus(SellerStatus.REJECTED)
-          .build();
+      SellerSearchCondition condition =
+          SellerSearchCondition.builder().sellerStatus(SellerStatus.REJECTED).build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Seller> result = sellerRepository.findAllByCondition(condition, pageable);
@@ -239,9 +233,7 @@ class SellerRepositoryTest {
 
     @Test
     void 상호명으로_검색한다() {
-      SellerSearchCondition condition = SellerSearchCondition.builder()
-          .businessName("우수")
-          .build();
+      SellerSearchCondition condition = SellerSearchCondition.builder().businessName("우수").build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Seller> result = sellerRepository.findAllByCondition(condition, pageable);
@@ -252,9 +244,8 @@ class SellerRepositoryTest {
 
     @Test
     void 사업자등록번호로_검색한다() {
-      SellerSearchCondition condition = SellerSearchCondition.builder()
-          .businessNumber("1234567890")
-          .build();
+      SellerSearchCondition condition =
+          SellerSearchCondition.builder().businessNumber("1234567890").build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Seller> result = sellerRepository.findAllByCondition(condition, pageable);
@@ -265,10 +256,11 @@ class SellerRepositoryTest {
 
     @Test
     void 복합_조건으로_검색한다() {
-      SellerSearchCondition condition = SellerSearchCondition.builder()
-          .status(UserStatus.ACTIVE)
-          .sellerStatus(SellerStatus.APPROVED)
-          .build();
+      SellerSearchCondition condition =
+          SellerSearchCondition.builder()
+              .status(UserStatus.ACTIVE)
+              .sellerStatus(SellerStatus.APPROVED)
+              .build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Seller> result = sellerRepository.findAllByCondition(condition, pageable);
@@ -297,8 +289,10 @@ class SellerRepositoryTest {
       Page<Seller> result = sellerRepository.findAllByCondition(condition, pageable);
 
       assertThat(result.getContent().get(0).getBusinessInfo().getBusinessName()).isEqualTo("우수상점");
-      assertThat(result.getContent().get(1).getBusinessInfo().getBusinessName()).isEqualTo("테스트상점1");
-      assertThat(result.getContent().get(2).getBusinessInfo().getBusinessName()).isEqualTo("테스트상점2");
+      assertThat(result.getContent().get(1).getBusinessInfo().getBusinessName())
+          .isEqualTo("테스트상점1");
+      assertThat(result.getContent().get(2).getBusinessInfo().getBusinessName())
+          .isEqualTo("테스트상점2");
     }
   }
 }

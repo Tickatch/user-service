@@ -61,28 +61,30 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
   @Override
   public Page<Customer> findAllByCondition(CustomerSearchCondition condition, Pageable pageable) {
-    List<Customer> content = queryFactory
-        .selectFrom(customer)
-        .where(
-            emailContains(condition.getEmail()),
-            nameContains(condition.getName()),
-            phoneContains(condition.getPhone()),
-            statusEq(condition.getStatus()),
-            gradeEq(condition.getGrade()))
-        .orderBy(getOrderSpecifiers(pageable.getSort()))
-        .offset(pageable.getOffset())
-        .limit(pageable.getPageSize())
-        .fetch();
+    List<Customer> content =
+        queryFactory
+            .selectFrom(customer)
+            .where(
+                emailContains(condition.getEmail()),
+                nameContains(condition.getName()),
+                phoneContains(condition.getPhone()),
+                statusEq(condition.getStatus()),
+                gradeEq(condition.getGrade()))
+            .orderBy(getOrderSpecifiers(pageable.getSort()))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
-    JPAQuery<Long> countQuery = queryFactory
-        .select(customer.count())
-        .from(customer)
-        .where(
-            emailContains(condition.getEmail()),
-            nameContains(condition.getName()),
-            phoneContains(condition.getPhone()),
-            statusEq(condition.getStatus()),
-            gradeEq(condition.getGrade()));
+    JPAQuery<Long> countQuery =
+        queryFactory
+            .select(customer.count())
+            .from(customer)
+            .where(
+                emailContains(condition.getEmail()),
+                nameContains(condition.getName()),
+                phoneContains(condition.getPhone()),
+                statusEq(condition.getStatus()),
+                gradeEq(condition.getGrade()));
 
     return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
   }
@@ -110,21 +112,23 @@ public class CustomerRepositoryImpl implements CustomerRepository {
   private OrderSpecifier<?>[] getOrderSpecifiers(Sort sort) {
     List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
 
-    sort.forEach(order -> {
-      Order direction = order.isAscending() ? Order.ASC : Order.DESC;
-      String property = order.getProperty();
+    sort.forEach(
+        order -> {
+          Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+          String property = order.getProperty();
 
-      OrderSpecifier<?> orderSpecifier = switch (property) {
-        case "email" -> new OrderSpecifier<>(direction, customer.email);
-        case "name" -> new OrderSpecifier<>(direction, customer.profile.name);
-        case "status" -> new OrderSpecifier<>(direction, customer.status);
-        case "grade" -> new OrderSpecifier<>(direction, customer.grade);
-        case "createdAt" -> new OrderSpecifier<>(direction, customer.createdAt);
-        case "updatedAt" -> new OrderSpecifier<>(direction, customer.updatedAt);
-        default -> new OrderSpecifier<>(direction, customer.createdAt);
-      };
-      orderSpecifiers.add(orderSpecifier);
-    });
+          OrderSpecifier<?> orderSpecifier =
+              switch (property) {
+                case "email" -> new OrderSpecifier<>(direction, customer.email);
+                case "name" -> new OrderSpecifier<>(direction, customer.profile.name);
+                case "status" -> new OrderSpecifier<>(direction, customer.status);
+                case "grade" -> new OrderSpecifier<>(direction, customer.grade);
+                case "createdAt" -> new OrderSpecifier<>(direction, customer.createdAt);
+                case "updatedAt" -> new OrderSpecifier<>(direction, customer.updatedAt);
+                default -> new OrderSpecifier<>(direction, customer.createdAt);
+              };
+          orderSpecifiers.add(orderSpecifier);
+        });
 
     if (orderSpecifiers.isEmpty()) {
       orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, customer.createdAt));
