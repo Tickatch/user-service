@@ -32,16 +32,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Customer extends BaseUser {
 
-  /**
-   * 고객 등급.
-   */
+  /** 고객 등급. */
   @Enumerated(EnumType.STRING)
   @Column(name = "grade", nullable = false, length = 20)
   private CustomerGrade grade;
 
-  /**
-   * 생년월일.
-   */
+  /** 생년월일. */
   @Column(name = "birth_date")
   private LocalDate birthDate;
 
@@ -61,7 +57,8 @@ public class Customer extends BaseUser {
    * @param birthDate 생년월일 (선택)
    * @return 생성된 Customer
    */
-  public static Customer create(UUID authId, String email, String name, String phone, LocalDate birthDate) {
+  public static Customer create(
+      UUID authId, String email, String name, String phone, LocalDate birthDate) {
     validateBirthDate(birthDate);
     UserProfile profile = UserProfile.of(name, phone);
     return new Customer(authId, email, profile, birthDate);

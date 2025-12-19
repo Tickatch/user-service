@@ -40,8 +40,10 @@ public enum CustomerErrorCode implements ErrorCode {
   // ========================================
   // 비즈니스 규칙 (422)
   // ========================================
-  CANNOT_WITHDRAW_WITH_ACTIVE_RESERVATIONS(HttpStatus.UNPROCESSABLE_ENTITY.value(), "CANNOT_WITHDRAW_WITH_ACTIVE_RESERVATIONS"),
-  GRADE_DOWNGRADE_NOT_ALLOWED(HttpStatus.UNPROCESSABLE_ENTITY.value(), "GRADE_DOWNGRADE_NOT_ALLOWED");
+  CANNOT_WITHDRAW_WITH_ACTIVE_RESERVATIONS(
+      HttpStatus.UNPROCESSABLE_ENTITY.value(), "CANNOT_WITHDRAW_WITH_ACTIVE_RESERVATIONS"),
+  GRADE_DOWNGRADE_NOT_ALLOWED(
+      HttpStatus.UNPROCESSABLE_ENTITY.value(), "GRADE_DOWNGRADE_NOT_ALLOWED");
 
   private final int status;
   private final String code;

@@ -46,25 +46,27 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("AdminApi 기능 테스트")
 class AdminApiTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-  @MockitoBean
-  private AdminCommandService adminCommandService;
+  @MockitoBean private AdminCommandService adminCommandService;
 
-  @MockitoBean
-  private AdminQueryService adminQueryService;
+  @MockitoBean private AdminQueryService adminQueryService;
 
   private static final String BASE_URL = "/api/v1/user/admins";
 
   private AdminResponse createResponse(UUID id, String email, String name, AdminRole role) {
     return new AdminResponse(
-        id, email, name, "01012345678", "개발팀", role,
-        UserStatus.ACTIVE, LocalDateTime.now(), LocalDateTime.now()
-    );
+        id,
+        email,
+        name,
+        "01012345678",
+        "개발팀",
+        role,
+        UserStatus.ACTIVE,
+        LocalDateTime.now(),
+        LocalDateTime.now());
   }
 
   @Test
@@ -73,9 +75,12 @@ class AdminApiTest {
   void getAdmins() throws Exception {
     UUID id = UUID.randomUUID();
     given(adminQueryService.searchAdmins(any(), any()))
-        .willReturn(new PageImpl<>(List.of(createResponse(id, "admin@example.com", "관리자", AdminRole.MANAGER))));
+        .willReturn(
+            new PageImpl<>(
+                List.of(createResponse(id, "admin@example.com", "관리자", AdminRole.MANAGER))));
 
-    mockMvc.perform(get(BASE_URL))
+    mockMvc
+        .perform(get(BASE_URL))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.content[0].email").value("admin@example.com"));
@@ -89,7 +94,8 @@ class AdminApiTest {
     given(adminQueryService.getAdmin(id))
         .willReturn(createResponse(id, "admin@example.com", "관리자", AdminRole.MANAGER));
 
-    mockMvc.perform(get(BASE_URL + "/{id}", id))
+    mockMvc
+        .perform(get(BASE_URL + "/{id}", id))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.email").value("admin@example.com"));
@@ -103,7 +109,8 @@ class AdminApiTest {
     given(adminQueryService.getAdmin(userId))
         .willReturn(createResponse(userId, "admin@example.com", "관리자", AdminRole.ADMIN));
 
-    mockMvc.perform(get(BASE_URL + "/me"))
+    mockMvc
+        .perform(get(BASE_URL + "/me"))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.id").value(userId.toString()));
@@ -115,7 +122,8 @@ class AdminApiTest {
   void countActiveByRole() throws Exception {
     given(adminQueryService.countActiveByRole(AdminRole.ADMIN)).willReturn(5L);
 
-    mockMvc.perform(get(BASE_URL + "/count").param("role", "ADMIN"))
+    mockMvc
+        .perform(get(BASE_URL + "/count").param("role", "ADMIN"))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data").value(5));
@@ -126,14 +134,16 @@ class AdminApiTest {
   @DisplayName("관리자를 생성한다")
   void createAdmin() throws Exception {
     UUID id = UUID.randomUUID();
-    CreateAdminRequest request = new CreateAdminRequest(
-        "admin@example.com", "관리자", "010-1234-5678", "개발팀", AdminRole.MANAGER
-    );
+    CreateAdminRequest request =
+        new CreateAdminRequest(
+            "admin@example.com", "관리자", "010-1234-5678", "개발팀", AdminRole.MANAGER);
     given(adminCommandService.createAdmin(any())).willReturn(id);
 
-    mockMvc.perform(post(BASE_URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request)))
+    mockMvc
+        .perform(
+            post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.data").value(id.toString()));
@@ -144,12 +154,15 @@ class AdminApiTest {
   @DisplayName("프로필을 수정한다")
   void updateProfile() throws Exception {
     UUID id = UUID.randomUUID();
-    UpdateAdminProfileRequest request = new UpdateAdminProfileRequest("김관리", "010-9999-8888", "운영팀");
+    UpdateAdminProfileRequest request =
+        new UpdateAdminProfileRequest("김관리", "010-9999-8888", "운영팀");
     willDoNothing().given(adminCommandService).updateProfile(any());
 
-    mockMvc.perform(put(BASE_URL + "/{id}/profile", id)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request)))
+    mockMvc
+        .perform(
+            put(BASE_URL + "/{id}/profile", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
         .andExpect(status().isOk());
   }
@@ -162,9 +175,11 @@ class AdminApiTest {
     ChangeRoleRequest request = new ChangeRoleRequest(AdminRole.ADMIN);
     willDoNothing().given(adminCommandService).changeRole(any());
 
-    mockMvc.perform(put(BASE_URL + "/{id}/role", id)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request)))
+    mockMvc
+        .perform(
+            put(BASE_URL + "/{id}/role", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
         .andExpect(status().isOk());
   }
@@ -176,9 +191,7 @@ class AdminApiTest {
     UUID id = UUID.randomUUID();
     willDoNothing().given(adminCommandService).suspendAdmin(id);
 
-    mockMvc.perform(post(BASE_URL + "/{id}/suspend", id))
-        .andDo(print())
-        .andExpect(status().isOk());
+    mockMvc.perform(post(BASE_URL + "/{id}/suspend", id)).andDo(print()).andExpect(status().isOk());
   }
 
   @Test
@@ -188,7 +201,8 @@ class AdminApiTest {
     UUID id = UUID.randomUUID();
     willDoNothing().given(adminCommandService).activateAdmin(id);
 
-    mockMvc.perform(post(BASE_URL + "/{id}/activate", id))
+    mockMvc
+        .perform(post(BASE_URL + "/{id}/activate", id))
         .andDo(print())
         .andExpect(status().isOk());
   }
@@ -200,8 +214,6 @@ class AdminApiTest {
     UUID id = UUID.randomUUID();
     willDoNothing().given(adminCommandService).withdrawAdmin(id);
 
-    mockMvc.perform(delete(BASE_URL + "/{id}", id))
-        .andDo(print())
-        .andExpect(status().isOk());
+    mockMvc.perform(delete(BASE_URL + "/{id}", id)).andDo(print()).andExpect(status().isOk());
   }
 }

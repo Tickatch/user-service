@@ -7,9 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * 고객 조회 응답 DTO.
- */
+/** 고객 조회 응답 DTO. */
 public record CustomerResponse(
     UUID id,
     String email,
@@ -19,8 +17,7 @@ public record CustomerResponse(
     CustomerGrade grade,
     UserStatus status,
     LocalDateTime createdAt,
-    LocalDateTime updatedAt
-) {
+    LocalDateTime updatedAt) {
 
   public static CustomerResponse from(Customer customer) {
     return new CustomerResponse(
@@ -32,7 +29,6 @@ public record CustomerResponse(
         customer.getGrade(),
         customer.getStatus(),
         customer.getCreatedAt(),
-        customer.getUpdatedAt()
-    );
+        customer.getUpdatedAt());
   }
 }

@@ -26,8 +26,7 @@ import org.springframework.data.domain.Sort;
 @DisplayName("CustomerRepository 테스트")
 class CustomerRepositoryTest {
 
-  @Autowired
-  private CustomerRepository customerRepository;
+  @Autowired private CustomerRepository customerRepository;
 
   private Customer customer1;
   private Customer customer2;
@@ -35,29 +34,17 @@ class CustomerRepositoryTest {
 
   @BeforeEach
   void setUp() {
-    customer1 = Customer.create(
-        UUID.randomUUID(),
-        "hong@test.com",
-        "홍길동",
-        "01012345678",
-        LocalDate.of(1990, 1, 1)
-    );
+    customer1 =
+        Customer.create(
+            UUID.randomUUID(), "hong@test.com", "홍길동", "01012345678", LocalDate.of(1990, 1, 1));
 
-    customer2 = Customer.create(
-        UUID.randomUUID(),
-        "kim@test.com",
-        "김철수",
-        "01087654321",
-        LocalDate.of(1985, 5, 15)
-    );
+    customer2 =
+        Customer.create(
+            UUID.randomUUID(), "kim@test.com", "김철수", "01087654321", LocalDate.of(1985, 5, 15));
 
-    customer3 = Customer.create(
-        UUID.randomUUID(),
-        "lee@test.com",
-        "이영희",
-        "01011112222",
-        LocalDate.of(1995, 12, 25)
-    );
+    customer3 =
+        Customer.create(
+            UUID.randomUUID(), "lee@test.com", "이영희", "01011112222", LocalDate.of(1995, 12, 25));
   }
 
   @Nested
@@ -175,9 +162,7 @@ class CustomerRepositoryTest {
 
     @Test
     void 이메일로_검색한다() {
-      CustomerSearchCondition condition = CustomerSearchCondition.builder()
-          .email("hong")
-          .build();
+      CustomerSearchCondition condition = CustomerSearchCondition.builder().email("hong").build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Customer> result = customerRepository.findAllByCondition(condition, pageable);
@@ -188,9 +173,7 @@ class CustomerRepositoryTest {
 
     @Test
     void 이름으로_검색한다() {
-      CustomerSearchCondition condition = CustomerSearchCondition.builder()
-          .name("김")
-          .build();
+      CustomerSearchCondition condition = CustomerSearchCondition.builder().name("김").build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Customer> result = customerRepository.findAllByCondition(condition, pageable);
@@ -201,9 +184,8 @@ class CustomerRepositoryTest {
 
     @Test
     void 등급으로_검색한다() {
-      CustomerSearchCondition condition = CustomerSearchCondition.builder()
-          .grade(CustomerGrade.VIP)
-          .build();
+      CustomerSearchCondition condition =
+          CustomerSearchCondition.builder().grade(CustomerGrade.VIP).build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Customer> result = customerRepository.findAllByCondition(condition, pageable);
@@ -217,9 +199,8 @@ class CustomerRepositoryTest {
       customer2.suspend();
       customerRepository.save(customer2);
 
-      CustomerSearchCondition condition = CustomerSearchCondition.builder()
-          .status(UserStatus.SUSPENDED)
-          .build();
+      CustomerSearchCondition condition =
+          CustomerSearchCondition.builder().status(UserStatus.SUSPENDED).build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Customer> result = customerRepository.findAllByCondition(condition, pageable);
@@ -230,10 +211,11 @@ class CustomerRepositoryTest {
 
     @Test
     void 복합_조건으로_검색한다() {
-      CustomerSearchCondition condition = CustomerSearchCondition.builder()
-          .status(UserStatus.ACTIVE)
-          .grade(CustomerGrade.NORMAL)
-          .build();
+      CustomerSearchCondition condition =
+          CustomerSearchCondition.builder()
+              .status(UserStatus.ACTIVE)
+              .grade(CustomerGrade.NORMAL)
+              .build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Customer> result = customerRepository.findAllByCondition(condition, pageable);

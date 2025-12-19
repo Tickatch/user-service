@@ -66,28 +66,30 @@ public class AdminRepositoryImpl implements AdminRepository {
 
   @Override
   public Page<Admin> findAllByCondition(AdminSearchCondition condition, Pageable pageable) {
-    List<Admin> content = queryFactory
-        .selectFrom(admin)
-        .where(
-            emailContains(condition.getEmail()),
-            nameContains(condition.getName()),
-            statusEq(condition.getStatus()),
-            adminRoleEq(condition.getAdminRole()),
-            departmentContains(condition.getDepartment()))
-        .orderBy(getOrderSpecifiers(pageable.getSort()))
-        .offset(pageable.getOffset())
-        .limit(pageable.getPageSize())
-        .fetch();
+    List<Admin> content =
+        queryFactory
+            .selectFrom(admin)
+            .where(
+                emailContains(condition.getEmail()),
+                nameContains(condition.getName()),
+                statusEq(condition.getStatus()),
+                adminRoleEq(condition.getAdminRole()),
+                departmentContains(condition.getDepartment()))
+            .orderBy(getOrderSpecifiers(pageable.getSort()))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
-    JPAQuery<Long> countQuery = queryFactory
-        .select(admin.count())
-        .from(admin)
-        .where(
-            emailContains(condition.getEmail()),
-            nameContains(condition.getName()),
-            statusEq(condition.getStatus()),
-            adminRoleEq(condition.getAdminRole()),
-            departmentContains(condition.getDepartment()));
+    JPAQuery<Long> countQuery =
+        queryFactory
+            .select(admin.count())
+            .from(admin)
+            .where(
+                emailContains(condition.getEmail()),
+                nameContains(condition.getName()),
+                statusEq(condition.getStatus()),
+                adminRoleEq(condition.getAdminRole()),
+                departmentContains(condition.getDepartment()));
 
     return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
   }
@@ -110,28 +112,31 @@ public class AdminRepositoryImpl implements AdminRepository {
 
   private BooleanExpression departmentContains(String department) {
     return StringUtils.hasText(department)
-        ? admin.profile.department.containsIgnoreCase(department) : null;
+        ? admin.profile.department.containsIgnoreCase(department)
+        : null;
   }
 
   private OrderSpecifier<?>[] getOrderSpecifiers(Sort sort) {
     List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
 
-    sort.forEach(order -> {
-      Order direction = order.isAscending() ? Order.ASC : Order.DESC;
-      String property = order.getProperty();
+    sort.forEach(
+        order -> {
+          Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+          String property = order.getProperty();
 
-      OrderSpecifier<?> orderSpecifier = switch (property) {
-        case "email" -> new OrderSpecifier<>(direction, admin.email);
-        case "name" -> new OrderSpecifier<>(direction, admin.profile.name);
-        case "status" -> new OrderSpecifier<>(direction, admin.status);
-        case "adminRole" -> new OrderSpecifier<>(direction, admin.adminRole);
-        case "department" -> new OrderSpecifier<>(direction, admin.profile.department);
-        case "createdAt" -> new OrderSpecifier<>(direction, admin.createdAt);
-        case "updatedAt" -> new OrderSpecifier<>(direction, admin.updatedAt);
-        default -> new OrderSpecifier<>(direction, admin.createdAt);
-      };
-      orderSpecifiers.add(orderSpecifier);
-    });
+          OrderSpecifier<?> orderSpecifier =
+              switch (property) {
+                case "email" -> new OrderSpecifier<>(direction, admin.email);
+                case "name" -> new OrderSpecifier<>(direction, admin.profile.name);
+                case "status" -> new OrderSpecifier<>(direction, admin.status);
+                case "adminRole" -> new OrderSpecifier<>(direction, admin.adminRole);
+                case "department" -> new OrderSpecifier<>(direction, admin.profile.department);
+                case "createdAt" -> new OrderSpecifier<>(direction, admin.createdAt);
+                case "updatedAt" -> new OrderSpecifier<>(direction, admin.updatedAt);
+                default -> new OrderSpecifier<>(direction, admin.createdAt);
+              };
+          orderSpecifiers.add(orderSpecifier);
+        });
 
     if (orderSpecifiers.isEmpty()) {
       orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, admin.createdAt));

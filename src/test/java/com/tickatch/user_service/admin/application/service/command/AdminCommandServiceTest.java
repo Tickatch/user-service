@@ -3,6 +3,7 @@ package com.tickatch.user_service.admin.application.service.command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.tickatch.user_service.admin.application.messaging.AdminLogEventPublisher;
 import com.tickatch.user_service.admin.application.service.command.dto.ChangeAdminRoleCommand;
 import com.tickatch.user_service.admin.application.service.command.dto.CreateAdminCommand;
 import com.tickatch.user_service.admin.application.service.command.dto.UpdateAdminProfileCommand;
@@ -21,20 +22,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @DataJpaTest
 @Import({QueryDslTestConfig.class, AdminRepositoryImpl.class, AdminCommandService.class})
 @DisplayName("AdminCommandService 테스트")
 class AdminCommandServiceTest {
 
-  @Autowired
-  private AdminCommandService adminCommandService;
+  @Autowired private AdminCommandService adminCommandService;
 
-  @Autowired
-  private AdminRepository adminRepository;
+  @Autowired private AdminRepository adminRepository;
 
-  @Autowired
-  private EntityManager entityManager;
+  @Autowired private EntityManager entityManager;
+
+  @MockitoBean private AdminLogEventPublisher logEventPublisher;
 
   private void flushAndClear() {
     entityManager.flush();
@@ -50,9 +51,9 @@ class AdminCommandServiceTest {
     void createAdmin_success() {
       // given
       UUID authId = UUID.randomUUID();
-      CreateAdminCommand command = CreateAdminCommand.of(
-          authId, "admin@example.com", "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER
-      );
+      CreateAdminCommand command =
+          CreateAdminCommand.of(
+              authId, "admin@example.com", "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER);
 
       // when
       UUID adminId = adminCommandService.createAdmin(command);
@@ -71,23 +72,35 @@ class AdminCommandServiceTest {
     @DisplayName("이미 존재하는 이메일이면 예외가 발생한다")
     void createAdmin_duplicateEmail_throwsException() {
       // given
-      Admin existing = Admin.create(
-          UUID.randomUUID(), "admin@example.com", "기존관리자", "010-0000-0000", "기존팀", AdminRole.MANAGER
-      );
+      Admin existing =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin@example.com",
+              "기존관리자",
+              "010-0000-0000",
+              "기존팀",
+              AdminRole.MANAGER);
       adminRepository.save(existing);
       flushAndClear();
 
-      CreateAdminCommand command = CreateAdminCommand.of(
-          UUID.randomUUID(), "admin@example.com", "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER
-      );
+      CreateAdminCommand command =
+          CreateAdminCommand.of(
+              UUID.randomUUID(),
+              "admin@example.com",
+              "관리자",
+              "010-1234-5678",
+              "운영팀",
+              AdminRole.MANAGER);
 
       // when & then
       assertThatThrownBy(() -> adminCommandService.createAdmin(command))
           .isInstanceOf(AdminException.class)
-          .satisfies(ex -> {
-            AdminException adminException = (AdminException) ex;
-            assertThat(adminException.getErrorCode()).isEqualTo(AdminErrorCode.ADMIN_ALREADY_EXISTS);
-          });
+          .satisfies(
+              ex -> {
+                AdminException adminException = (AdminException) ex;
+                assertThat(adminException.getErrorCode())
+                    .isEqualTo(AdminErrorCode.ADMIN_ALREADY_EXISTS);
+              });
     }
   }
 
@@ -99,16 +112,20 @@ class AdminCommandServiceTest {
     @DisplayName("관리자 프로필을 수정한다")
     void updateProfile_success() {
       // given
-      Admin admin = Admin.create(
-          UUID.randomUUID(), "admin@example.com", "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER
-      );
+      Admin admin =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin@example.com",
+              "관리자",
+              "010-1234-5678",
+              "운영팀",
+              AdminRole.MANAGER);
       adminRepository.save(admin);
       flushAndClear();
 
       UUID adminId = admin.getId();
-      UpdateAdminProfileCommand command = UpdateAdminProfileCommand.of(
-          adminId, "수정관리자", "010-9999-8888", "기술팀"
-      );
+      UpdateAdminProfileCommand command =
+          UpdateAdminProfileCommand.of(adminId, "수정관리자", "010-9999-8888", "기술팀");
 
       // when
       adminCommandService.updateProfile(command);
@@ -126,17 +143,17 @@ class AdminCommandServiceTest {
     void updateProfile_notFound_throwsException() {
       // given
       UUID adminId = UUID.randomUUID();
-      UpdateAdminProfileCommand command = UpdateAdminProfileCommand.of(
-          adminId, "수정관리자", "010-9999-8888", "기술팀"
-      );
+      UpdateAdminProfileCommand command =
+          UpdateAdminProfileCommand.of(adminId, "수정관리자", "010-9999-8888", "기술팀");
 
       // when & then
       assertThatThrownBy(() -> adminCommandService.updateProfile(command))
           .isInstanceOf(AdminException.class)
-          .satisfies(ex -> {
-            AdminException adminException = (AdminException) ex;
-            assertThat(adminException.getErrorCode()).isEqualTo(AdminErrorCode.ADMIN_NOT_FOUND);
-          });
+          .satisfies(
+              ex -> {
+                AdminException adminException = (AdminException) ex;
+                assertThat(adminException.getErrorCode()).isEqualTo(AdminErrorCode.ADMIN_NOT_FOUND);
+              });
     }
   }
 
@@ -148,12 +165,22 @@ class AdminCommandServiceTest {
     @DisplayName("ADMIN이 다른 관리자의 역할을 변경한다")
     void changeRole_success() {
       // given
-      Admin targetAdmin = Admin.create(
-          UUID.randomUUID(), "target@example.com", "대상관리자", "010-1111-1111", "운영팀", AdminRole.MANAGER
-      );
-      Admin changerAdmin = Admin.create(
-          UUID.randomUUID(), "changer@example.com", "변경관리자", "010-2222-2222", "기술팀", AdminRole.ADMIN
-      );
+      Admin targetAdmin =
+          Admin.create(
+              UUID.randomUUID(),
+              "target@example.com",
+              "대상관리자",
+              "010-1111-1111",
+              "운영팀",
+              AdminRole.MANAGER);
+      Admin changerAdmin =
+          Admin.create(
+              UUID.randomUUID(),
+              "changer@example.com",
+              "변경관리자",
+              "010-2222-2222",
+              "기술팀",
+              AdminRole.ADMIN);
       adminRepository.save(targetAdmin);
       adminRepository.save(changerAdmin);
       flushAndClear();
@@ -161,9 +188,8 @@ class AdminCommandServiceTest {
       UUID targetAdminId = targetAdmin.getId();
       UUID changerAdminId = changerAdmin.getId();
 
-      ChangeAdminRoleCommand command = ChangeAdminRoleCommand.of(
-          targetAdminId, changerAdminId, AdminRole.ADMIN
-      );
+      ChangeAdminRoleCommand command =
+          ChangeAdminRoleCommand.of(targetAdminId, changerAdminId, AdminRole.ADMIN);
 
       // when
       adminCommandService.changeRole(command);
@@ -178,12 +204,22 @@ class AdminCommandServiceTest {
     @DisplayName("MANAGER가 역할 변경을 시도하면 예외가 발생한다")
     void changeRole_notAdmin_throwsException() {
       // given
-      Admin targetAdmin = Admin.create(
-          UUID.randomUUID(), "target@example.com", "대상관리자", "010-1111-1111", "운영팀", AdminRole.MANAGER
-      );
-      Admin changerAdmin = Admin.create(
-          UUID.randomUUID(), "changer@example.com", "변경관리자", "010-2222-2222", "기술팀", AdminRole.MANAGER
-      );
+      Admin targetAdmin =
+          Admin.create(
+              UUID.randomUUID(),
+              "target@example.com",
+              "대상관리자",
+              "010-1111-1111",
+              "운영팀",
+              AdminRole.MANAGER);
+      Admin changerAdmin =
+          Admin.create(
+              UUID.randomUUID(),
+              "changer@example.com",
+              "변경관리자",
+              "010-2222-2222",
+              "기술팀",
+              AdminRole.MANAGER);
       adminRepository.save(targetAdmin);
       adminRepository.save(changerAdmin);
       flushAndClear();
@@ -191,42 +227,49 @@ class AdminCommandServiceTest {
       UUID targetAdminId = targetAdmin.getId();
       UUID changerAdminId = changerAdmin.getId();
 
-      ChangeAdminRoleCommand command = ChangeAdminRoleCommand.of(
-          targetAdminId, changerAdminId, AdminRole.ADMIN
-      );
+      ChangeAdminRoleCommand command =
+          ChangeAdminRoleCommand.of(targetAdminId, changerAdminId, AdminRole.ADMIN);
 
       // when & then
       assertThatThrownBy(() -> adminCommandService.changeRole(command))
           .isInstanceOf(AdminException.class)
-          .satisfies(ex -> {
-            AdminException adminException = (AdminException) ex;
-            assertThat(adminException.getErrorCode()).isEqualTo(AdminErrorCode.ONLY_ADMIN_CAN_CHANGE_ROLE);
-          });
+          .satisfies(
+              ex -> {
+                AdminException adminException = (AdminException) ex;
+                assertThat(adminException.getErrorCode())
+                    .isEqualTo(AdminErrorCode.ONLY_ADMIN_CAN_CHANGE_ROLE);
+              });
     }
 
     @Test
     @DisplayName("자신의 역할은 변경할 수 없다")
     void changeRole_self_throwsException() {
       // given
-      Admin admin = Admin.create(
-          UUID.randomUUID(), "admin@example.com", "관리자", "010-1234-5678", "운영팀", AdminRole.ADMIN
-      );
+      Admin admin =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin@example.com",
+              "관리자",
+              "010-1234-5678",
+              "운영팀",
+              AdminRole.ADMIN);
       adminRepository.save(admin);
       flushAndClear();
 
       UUID adminId = admin.getId();
 
-      ChangeAdminRoleCommand command = ChangeAdminRoleCommand.of(
-          adminId, adminId, AdminRole.MANAGER
-      );
+      ChangeAdminRoleCommand command =
+          ChangeAdminRoleCommand.of(adminId, adminId, AdminRole.MANAGER);
 
       // when & then
       assertThatThrownBy(() -> adminCommandService.changeRole(command))
           .isInstanceOf(AdminException.class)
-          .satisfies(ex -> {
-            AdminException adminException = (AdminException) ex;
-            assertThat(adminException.getErrorCode()).isEqualTo(AdminErrorCode.CANNOT_CHANGE_OWN_ROLE);
-          });
+          .satisfies(
+              ex -> {
+                AdminException adminException = (AdminException) ex;
+                assertThat(adminException.getErrorCode())
+                    .isEqualTo(AdminErrorCode.CANNOT_CHANGE_OWN_ROLE);
+              });
     }
   }
 
@@ -238,9 +281,14 @@ class AdminCommandServiceTest {
     @DisplayName("관리자를 정지한다")
     void suspendAdmin_success() {
       // given
-      Admin admin = Admin.create(
-          UUID.randomUUID(), "admin@example.com", "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER
-      );
+      Admin admin =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin@example.com",
+              "관리자",
+              "010-1234-5678",
+              "운영팀",
+              AdminRole.MANAGER);
       adminRepository.save(admin);
       flushAndClear();
 
@@ -264,9 +312,14 @@ class AdminCommandServiceTest {
     @DisplayName("정지된 관리자를 활성화한다")
     void activateAdmin_success() {
       // given
-      Admin admin = Admin.create(
-          UUID.randomUUID(), "admin@example.com", "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER
-      );
+      Admin admin =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin@example.com",
+              "관리자",
+              "010-1234-5678",
+              "운영팀",
+              AdminRole.MANAGER);
       admin.suspend();
       adminRepository.save(admin);
       flushAndClear();
@@ -291,9 +344,14 @@ class AdminCommandServiceTest {
     @DisplayName("관리자를 탈퇴 처리한다")
     void withdrawAdmin_success() {
       // given
-      Admin admin = Admin.create(
-          UUID.randomUUID(), "admin@example.com", "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER
-      );
+      Admin admin =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin@example.com",
+              "관리자",
+              "010-1234-5678",
+              "운영팀",
+              AdminRole.MANAGER);
       adminRepository.save(admin);
       flushAndClear();
 

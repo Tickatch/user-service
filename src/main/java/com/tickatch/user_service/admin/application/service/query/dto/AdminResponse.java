@@ -6,9 +6,7 @@ import com.tickatch.user_service.common.domain.vo.UserStatus;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * 관리자 조회 응답 DTO.
- */
+/** 관리자 조회 응답 DTO. */
 public record AdminResponse(
     UUID id,
     String email,
@@ -18,8 +16,7 @@ public record AdminResponse(
     AdminRole adminRole,
     UserStatus status,
     LocalDateTime createdAt,
-    LocalDateTime updatedAt
-) {
+    LocalDateTime updatedAt) {
 
   public static AdminResponse from(Admin admin) {
     return new AdminResponse(
@@ -31,7 +28,6 @@ public record AdminResponse(
         admin.getAdminRole(),
         admin.getStatus(),
         admin.getCreatedAt(),
-        admin.getUpdatedAt()
-    );
+        admin.getUpdatedAt());
   }
 }

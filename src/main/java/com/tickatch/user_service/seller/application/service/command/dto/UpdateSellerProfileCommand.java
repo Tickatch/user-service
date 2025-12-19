@@ -9,11 +9,7 @@ import java.util.UUID;
  * @param name 이름
  * @param phone 연락처
  */
-public record UpdateSellerProfileCommand(
-    UUID sellerId,
-    String name,
-    String phone
-) {
+public record UpdateSellerProfileCommand(UUID sellerId, String name, String phone) {
 
   public static UpdateSellerProfileCommand of(UUID sellerId, String name, String phone) {
     return new UpdateSellerProfileCommand(sellerId, name, phone);

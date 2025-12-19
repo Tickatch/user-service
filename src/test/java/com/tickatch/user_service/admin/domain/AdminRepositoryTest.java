@@ -25,8 +25,7 @@ import org.springframework.data.domain.Sort;
 @DisplayName("AdminRepository 테스트")
 class AdminRepositoryTest {
 
-  @Autowired
-  private AdminRepository adminRepository;
+  @Autowired private AdminRepository adminRepository;
 
   private Admin admin1;
   private Admin admin2;
@@ -34,32 +33,27 @@ class AdminRepositoryTest {
 
   @BeforeEach
   void setUp() {
-    admin1 = Admin.create(
-        UUID.randomUUID(),
-        "admin1@test.com",
-        "관리자1",
-        "01012345678",
-        "운영팀",
-        AdminRole.ADMIN
-    );
+    admin1 =
+        Admin.create(
+            UUID.randomUUID(), "admin1@test.com", "관리자1", "01012345678", "운영팀", AdminRole.ADMIN);
 
-    admin2 = Admin.create(
-        UUID.randomUUID(),
-        "manager1@test.com",
-        "매니저1",
-        "01087654321",
-        "운영팀",
-        AdminRole.MANAGER
-    );
+    admin2 =
+        Admin.create(
+            UUID.randomUUID(),
+            "manager1@test.com",
+            "매니저1",
+            "01087654321",
+            "운영팀",
+            AdminRole.MANAGER);
 
-    admin3 = Admin.create(
-        UUID.randomUUID(),
-        "manager2@test.com",
-        "매니저2",
-        "01011112222",
-        "개발팀",
-        AdminRole.MANAGER
-    );
+    admin3 =
+        Admin.create(
+            UUID.randomUUID(),
+            "manager2@test.com",
+            "매니저2",
+            "01011112222",
+            "개발팀",
+            AdminRole.MANAGER);
   }
 
   @Nested
@@ -210,9 +204,7 @@ class AdminRepositoryTest {
 
     @Test
     void 이메일로_검색이_된다() {
-      AdminSearchCondition condition = AdminSearchCondition.builder()
-          .email("admin1")
-          .build();
+      AdminSearchCondition condition = AdminSearchCondition.builder().email("admin1").build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Admin> result = adminRepository.findAllByCondition(condition, pageable);
@@ -223,9 +215,7 @@ class AdminRepositoryTest {
 
     @Test
     void 이름으로_검색이_된다() {
-      AdminSearchCondition condition = AdminSearchCondition.builder()
-          .name("매니저")
-          .build();
+      AdminSearchCondition condition = AdminSearchCondition.builder().name("매니저").build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Admin> result = adminRepository.findAllByCondition(condition, pageable);
@@ -235,9 +225,8 @@ class AdminRepositoryTest {
 
     @Test
     void Admin_역할로_검색한다() {
-      AdminSearchCondition condition = AdminSearchCondition.builder()
-          .adminRole(AdminRole.ADMIN)
-          .build();
+      AdminSearchCondition condition =
+          AdminSearchCondition.builder().adminRole(AdminRole.ADMIN).build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Admin> result = adminRepository.findAllByCondition(condition, pageable);
@@ -248,9 +237,8 @@ class AdminRepositoryTest {
 
     @Test
     void MANAGER_역할로_검색한다() {
-      AdminSearchCondition condition = AdminSearchCondition.builder()
-          .adminRole(AdminRole.MANAGER)
-          .build();
+      AdminSearchCondition condition =
+          AdminSearchCondition.builder().adminRole(AdminRole.MANAGER).build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Admin> result = adminRepository.findAllByCondition(condition, pageable);
@@ -260,9 +248,7 @@ class AdminRepositoryTest {
 
     @Test
     void 부서로_검색한다() {
-      AdminSearchCondition condition = AdminSearchCondition.builder()
-          .department("운영")
-          .build();
+      AdminSearchCondition condition = AdminSearchCondition.builder().department("운영").build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Admin> result = adminRepository.findAllByCondition(condition, pageable);
@@ -275,9 +261,8 @@ class AdminRepositoryTest {
       admin2.suspend();
       adminRepository.save(admin2);
 
-      AdminSearchCondition condition = AdminSearchCondition.builder()
-          .status(UserStatus.SUSPENDED)
-          .build();
+      AdminSearchCondition condition =
+          AdminSearchCondition.builder().status(UserStatus.SUSPENDED).build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Admin> result = adminRepository.findAllByCondition(condition, pageable);
@@ -288,10 +273,8 @@ class AdminRepositoryTest {
 
     @Test
     void 복합_조건으로_검색한다() {
-      AdminSearchCondition condition = AdminSearchCondition.builder()
-          .adminRole(AdminRole.MANAGER)
-          .department("운영")
-          .build();
+      AdminSearchCondition condition =
+          AdminSearchCondition.builder().adminRole(AdminRole.MANAGER).department("운영").build();
       PageRequest pageable = PageRequest.of(0, 10);
 
       Page<Admin> result = adminRepository.findAllByCondition(condition, pageable);

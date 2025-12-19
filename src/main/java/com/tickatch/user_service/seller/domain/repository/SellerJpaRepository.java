@@ -39,7 +39,8 @@ public interface SellerJpaRepository extends JpaRepository<Seller, UUID> {
    * @param businessNumber 사업자등록번호
    * @return 존재하면 true
    */
-  @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Seller s "
-      + "WHERE s.businessInfo.businessNumber = :businessNumber")
+  @Query(
+      "SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Seller s "
+          + "WHERE s.businessInfo.businessNumber = :businessNumber")
   boolean existsByBusinessNumber(@Param("businessNumber") String businessNumber);
 }

@@ -37,8 +37,10 @@ public class AdminQueryService {
    * @throws AdminException 관리자를 찾을 수 없는 경우
    */
   public AdminResponse getAdmin(UUID adminId) {
-    Admin admin = adminRepository.findById(adminId)
-        .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_NOT_FOUND));
+    Admin admin =
+        adminRepository
+            .findById(adminId)
+            .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_NOT_FOUND));
     return AdminResponse.from(admin);
   }
 
@@ -50,8 +52,10 @@ public class AdminQueryService {
    * @throws AdminException 관리자를 찾을 수 없는 경우
    */
   public AdminResponse getAdminByEmail(String email) {
-    Admin admin = adminRepository.findByEmail(email)
-        .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_NOT_FOUND));
+    Admin admin =
+        adminRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_NOT_FOUND));
     return AdminResponse.from(admin);
   }
 
@@ -63,7 +67,8 @@ public class AdminQueryService {
    * @return 페이징된 관리자 응답 목록
    */
   public Page<AdminResponse> searchAdmins(AdminSearchRequest request, Pageable pageable) {
-    return adminRepository.findAllByCondition(request.toCondition(), pageable)
+    return adminRepository
+        .findAllByCondition(request.toCondition(), pageable)
         .map(AdminResponse::from);
   }
 

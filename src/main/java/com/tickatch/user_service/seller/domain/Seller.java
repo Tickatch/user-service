@@ -41,40 +41,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Seller extends BaseUser {
 
-  /**
-   * 사업자 정보.
-   */
-  @Embedded
-  private BusinessInfo businessInfo;
+  /** 사업자 정보. */
+  @Embedded private BusinessInfo businessInfo;
 
-  /**
-   * 정산 정보.
-   */
-  @Embedded
-  private SettlementInfo settlementInfo;
+  /** 정산 정보. */
+  @Embedded private SettlementInfo settlementInfo;
 
-  /**
-   * 판매자 승인 상태.
-   */
+  /** 판매자 승인 상태. */
   @Enumerated(EnumType.STRING)
   @Column(name = "seller_status", nullable = false, length = 20)
   private SellerStatus sellerStatus;
 
-  /**
-   * 승인 일시.
-   */
+  /** 승인 일시. */
   @Column(name = "approved_at")
   private LocalDateTime approvedAt;
 
-  /**
-   * 승인자.
-   */
+  /** 승인자. */
   @Column(name = "approved_by", length = 100)
   private String approvedBy;
 
-  /**
-   * 거절 사유.
-   */
+  /** 거절 사유. */
   @Column(name = "rejected_reason", length = 500)
   private String rejectedReason;
 
@@ -98,11 +84,18 @@ public class Seller extends BaseUser {
    * @param businessAddress 사업장 주소
    * @return 생성된 Seller (PENDING 상태)
    */
-  public static Seller create(UUID authId, String email, String name, String phone,
-      String businessName, String businessNumber,
-      String representativeName, Address businessAddress) {
+  public static Seller create(
+      UUID authId,
+      String email,
+      String name,
+      String phone,
+      String businessName,
+      String businessNumber,
+      String representativeName,
+      Address businessAddress) {
     UserProfile profile = UserProfile.of(name, phone);
-    BusinessInfo businessInfo = BusinessInfo.of(businessName, businessNumber, representativeName, businessAddress);
+    BusinessInfo businessInfo =
+        BusinessInfo.of(businessName, businessNumber, representativeName, businessAddress);
     return new Seller(authId, email, profile, businessInfo);
   }
 
@@ -147,10 +140,14 @@ public class Seller extends BaseUser {
    * @param representativeName 새 대표자명
    * @param businessAddress 새 사업장 주소
    */
-  public void updateBusinessInfo(String businessName, String businessNumber,
-      String representativeName, Address businessAddress) {
+  public void updateBusinessInfo(
+      String businessName,
+      String businessNumber,
+      String representativeName,
+      Address businessAddress) {
     validateNotWithdrawn();
-    this.businessInfo = this.businessInfo.update(businessName, businessNumber, representativeName, businessAddress);
+    this.businessInfo =
+        this.businessInfo.update(businessName, businessNumber, representativeName, businessAddress);
   }
 
   /**
@@ -249,8 +246,7 @@ public class Seller extends BaseUser {
   /**
    * JPA @Embedded 객체 초기화.
    *
-   * JPA는 @Embedded 객체의 모든 컬럼이 null이면 객체 자체를 null로 로드한다.
-   * 이 콜백에서 null인 @Embedded 객체를 빈 객체로 초기화한다.
+   * <p>JPA는 @Embedded 객체의 모든 컬럼이 null이면 객체 자체를 null로 로드한다. 이 콜백에서 null인 @Embedded 객체를 빈 객체로 초기화한다.
    */
   @PostLoad
   private void initEmbeddedObjects() {

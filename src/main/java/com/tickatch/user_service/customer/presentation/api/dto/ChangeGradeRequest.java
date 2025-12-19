@@ -12,9 +12,4 @@ import jakarta.validation.constraints.NotNull;
  * @author Tickatch
  * @since 1.0.0
  */
-public record ChangeGradeRequest(
-    @NotNull(message = "등급은 필수입니다")
-    CustomerGrade grade
-) {
-
-}
+public record ChangeGradeRequest(@NotNull(message = "등급은 필수입니다") CustomerGrade grade) {}

@@ -23,23 +23,12 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public record CreateAdminRequest(
-    @NotBlank(message = "이메일은 필수입니다")
-    @Email(message = "이메일 형식이 올바르지 않습니다")
-    String email,
-
-    @NotBlank(message = "이름은 필수입니다")
-    @Size(max = 50, message = "이름은 50자 이하여야 합니다")
-    String name,
-
+    @NotBlank(message = "이메일은 필수입니다") @Email(message = "이메일 형식이 올바르지 않습니다") String email,
+    @NotBlank(message = "이름은 필수입니다") @Size(max = 50, message = "이름은 50자 이하여야 합니다") String name,
     @Pattern(regexp = "^01[0-9]-?[0-9]{3,4}-?[0-9]{4}$", message = "연락처 형식이 올바르지 않습니다")
-    String phone,
-
-    @Size(max = 100, message = "부서명은 100자 이하여야 합니다")
-    String department,
-
-    @NotNull(message = "역할은 필수입니다")
-    AdminRole adminRole
-) {
+        String phone,
+    @Size(max = 100, message = "부서명은 100자 이하여야 합니다") String department,
+    @NotNull(message = "역할은 필수입니다") AdminRole adminRole) {
 
   /**
    * Command 객체로 변환한다.

@@ -24,10 +24,9 @@ public class TestSecurityConfig {
   public SecurityFilterChain testSecurityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(CsrfConfigurer::disable)
         .addFilterBefore(new LoginFilter(), UsernamePasswordAuthenticationFilter.class)
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth -> auth
-            .anyRequest().authenticated()
-        );
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
 
     return http.build();
   }

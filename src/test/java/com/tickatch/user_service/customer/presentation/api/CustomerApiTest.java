@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -49,26 +48,27 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("CustomerApi 기능 테스트")
 class CustomerApiTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-  @MockitoBean
-  private CustomerCommandService customerCommandService;
+  @MockitoBean private CustomerCommandService customerCommandService;
 
-  @MockitoBean
-  private CustomerQueryService customerQueryService;
+  @MockitoBean private CustomerQueryService customerQueryService;
 
   private static final String BASE_URL = "/api/v1/user/customers";
 
   private CustomerResponse createResponse(UUID id, String email, String name) {
     return new CustomerResponse(
-        id, email, name, "01012345678",
-        LocalDate.of(1990, 1, 1), CustomerGrade.NORMAL,
-        UserStatus.ACTIVE, LocalDateTime.now(), LocalDateTime.now()
-    );
+        id,
+        email,
+        name,
+        "01012345678",
+        LocalDate.of(1990, 1, 1),
+        CustomerGrade.NORMAL,
+        UserStatus.ACTIVE,
+        LocalDateTime.now(),
+        LocalDateTime.now());
   }
 
   @Test
@@ -79,7 +79,8 @@ class CustomerApiTest {
     given(customerQueryService.searchCustomers(any(), any()))
         .willReturn(new PageImpl<>(List.of(createResponse(id, "test@example.com", "홍길동"))));
 
-    mockMvc.perform(get(BASE_URL))
+    mockMvc
+        .perform(get(BASE_URL))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
@@ -91,9 +92,11 @@ class CustomerApiTest {
   @DisplayName("고객 단건을 조회한다")
   void getCustomer() throws Exception {
     UUID id = UUID.randomUUID();
-    given(customerQueryService.getCustomer(id)).willReturn(createResponse(id, "test@example.com", "홍길동"));
+    given(customerQueryService.getCustomer(id))
+        .willReturn(createResponse(id, "test@example.com", "홍길동"));
 
-    mockMvc.perform(get(BASE_URL + "/{id}", id))
+    mockMvc
+        .perform(get(BASE_URL + "/{id}", id))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.email").value("test@example.com"));
@@ -104,9 +107,11 @@ class CustomerApiTest {
   @DisplayName("내 정보를 조회한다")
   void getMe() throws Exception {
     UUID userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
-    given(customerQueryService.getCustomer(userId)).willReturn(createResponse(userId, "test@example.com", "홍길동"));
+    given(customerQueryService.getCustomer(userId))
+        .willReturn(createResponse(userId, "test@example.com", "홍길동"));
 
-    mockMvc.perform(get(BASE_URL + "/me"))
+    mockMvc
+        .perform(get(BASE_URL + "/me"))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.id").value(userId.toString()));
@@ -117,14 +122,16 @@ class CustomerApiTest {
   @DisplayName("고객을 생성한다")
   void createCustomer() throws Exception {
     UUID id = UUID.randomUUID();
-    CreateCustomerRequest request = new CreateCustomerRequest(
-        "test@example.com", "홍길동", "010-1234-5678", LocalDate.of(1990, 1, 1)
-    );
+    CreateCustomerRequest request =
+        new CreateCustomerRequest(
+            "test@example.com", "홍길동", "010-1234-5678", LocalDate.of(1990, 1, 1));
     given(customerCommandService.createCustomer(any())).willReturn(id);
 
-    mockMvc.perform(post(BASE_URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request)))
+    mockMvc
+        .perform(
+            post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.data").value(id.toString()));
@@ -135,14 +142,15 @@ class CustomerApiTest {
   @DisplayName("프로필을 수정한다")
   void updateProfile() throws Exception {
     UUID id = UUID.randomUUID();
-    UpdateCustomerProfileRequest request = new UpdateCustomerProfileRequest(
-        "김철수", "010-9999-8888", LocalDate.of(1995, 5, 5)
-    );
+    UpdateCustomerProfileRequest request =
+        new UpdateCustomerProfileRequest("김철수", "010-9999-8888", LocalDate.of(1995, 5, 5));
     willDoNothing().given(customerCommandService).updateProfile(any());
 
-    mockMvc.perform(put(BASE_URL + "/{id}/profile", id)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request)))
+    mockMvc
+        .perform(
+            put(BASE_URL + "/{id}/profile", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
         .andExpect(status().isOk());
   }
@@ -155,9 +163,11 @@ class CustomerApiTest {
     ChangeGradeRequest request = new ChangeGradeRequest(CustomerGrade.VIP);
     willDoNothing().given(customerCommandService).changeGrade(eq(id), eq(CustomerGrade.VIP));
 
-    mockMvc.perform(put(BASE_URL + "/{id}/grade", id)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request)))
+    mockMvc
+        .perform(
+            put(BASE_URL + "/{id}/grade", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
         .andExpect(status().isOk());
   }
@@ -169,9 +179,7 @@ class CustomerApiTest {
     UUID id = UUID.randomUUID();
     willDoNothing().given(customerCommandService).suspendCustomer(id);
 
-    mockMvc.perform(post(BASE_URL + "/{id}/suspend", id))
-        .andDo(print())
-        .andExpect(status().isOk());
+    mockMvc.perform(post(BASE_URL + "/{id}/suspend", id)).andDo(print()).andExpect(status().isOk());
   }
 
   @Test
@@ -181,7 +189,8 @@ class CustomerApiTest {
     UUID id = UUID.randomUUID();
     willDoNothing().given(customerCommandService).activateCustomer(id);
 
-    mockMvc.perform(post(BASE_URL + "/{id}/activate", id))
+    mockMvc
+        .perform(post(BASE_URL + "/{id}/activate", id))
         .andDo(print())
         .andExpect(status().isOk());
   }
@@ -193,8 +202,6 @@ class CustomerApiTest {
     UUID id = UUID.randomUUID();
     willDoNothing().given(customerCommandService).withdrawCustomer(id);
 
-    mockMvc.perform(delete(BASE_URL + "/{id}", id))
-        .andDo(print())
-        .andExpect(status().isOk());
+    mockMvc.perform(delete(BASE_URL + "/{id}", id)).andDo(print()).andExpect(status().isOk());
   }
 }

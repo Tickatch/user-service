@@ -36,8 +36,10 @@ public class CustomerQueryService {
    * @throws CustomerException 고객을 찾을 수 없는 경우
    */
   public CustomerResponse getCustomer(UUID customerId) {
-    Customer customer = customerRepository.findById(customerId)
-        .orElseThrow(() -> new CustomerException(CustomerErrorCode.CUSTOMER_NOT_FOUND));
+    Customer customer =
+        customerRepository
+            .findById(customerId)
+            .orElseThrow(() -> new CustomerException(CustomerErrorCode.CUSTOMER_NOT_FOUND));
     return CustomerResponse.from(customer);
   }
 
@@ -49,8 +51,10 @@ public class CustomerQueryService {
    * @throws CustomerException 고객을 찾을 수 없는 경우
    */
   public CustomerResponse getCustomerByEmail(String email) {
-    Customer customer = customerRepository.findByEmail(email)
-        .orElseThrow(() -> new CustomerException(CustomerErrorCode.CUSTOMER_NOT_FOUND));
+    Customer customer =
+        customerRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new CustomerException(CustomerErrorCode.CUSTOMER_NOT_FOUND));
     return CustomerResponse.from(customer);
   }
 
@@ -62,7 +66,8 @@ public class CustomerQueryService {
    * @return 페이징된 고객 응답 목록
    */
   public Page<CustomerResponse> searchCustomers(CustomerSearchRequest request, Pageable pageable) {
-    return customerRepository.findAllByCondition(request.toCondition(), pageable)
+    return customerRepository
+        .findAllByCondition(request.toCondition(), pageable)
         .map(CustomerResponse::from);
   }
 

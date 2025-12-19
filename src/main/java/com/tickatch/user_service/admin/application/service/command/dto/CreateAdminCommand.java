@@ -14,13 +14,7 @@ import java.util.UUID;
  * @param adminRole 역할
  */
 public record CreateAdminCommand(
-    UUID authId,
-    String email,
-    String name,
-    String phone,
-    String department,
-    AdminRole adminRole
-) {
+    UUID authId, String email, String name, String phone, String department, AdminRole adminRole) {
 
   public static CreateAdminCommand of(
       UUID authId,
@@ -28,8 +22,7 @@ public record CreateAdminCommand(
       String name,
       String phone,
       String department,
-      AdminRole adminRole
-  ) {
+      AdminRole adminRole) {
     return new CreateAdminCommand(authId, email, name, phone, department, adminRole);
   }
 }

@@ -41,7 +41,15 @@ class SellerTest {
   }
 
   private Seller createSeller() {
-    return Seller.create(authId, email, name, phone, businessName, businessNumber, representativeName, businessAddress);
+    return Seller.create(
+        authId,
+        email,
+        name,
+        phone,
+        businessName,
+        businessNumber,
+        representativeName,
+        businessAddress);
   }
 
   @Nested
@@ -62,7 +70,9 @@ class SellerTest {
 
     @Test
     void 사업장_주소_없이_생성한다() {
-      Seller seller = Seller.create(authId, email, name, phone, businessName, businessNumber, representativeName, null);
+      Seller seller =
+          Seller.create(
+              authId, email, name, phone, businessName, businessNumber, representativeName, null);
       assertThat(seller.getBusinessInfo().getBusinessAddress().isEmpty()).isTrue();
     }
   }
@@ -88,10 +98,11 @@ class SellerTest {
       seller.approve("admin@test.com");
       assertThatThrownBy(() -> seller.approve("admin@test.com"))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.SELLER_ALREADY_APPROVED);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.SELLER_ALREADY_APPROVED);
+              });
     }
 
     @Test
@@ -100,10 +111,11 @@ class SellerTest {
       seller.reject("서류 미비");
       assertThatThrownBy(() -> seller.approve("admin@test.com"))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.SELLER_ALREADY_REJECTED);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.SELLER_ALREADY_REJECTED);
+              });
     }
 
     @Test
@@ -112,10 +124,11 @@ class SellerTest {
       seller.withdraw();
       assertThatThrownBy(() -> seller.approve("admin@test.com"))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.USER_ALREADY_WITHDRAWN);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.USER_ALREADY_WITHDRAWN);
+              });
     }
   }
 
@@ -139,10 +152,11 @@ class SellerTest {
       Seller seller = createSeller();
       assertThatThrownBy(() -> seller.reject(null))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_REJECTION_REASON);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_REJECTION_REASON);
+              });
     }
 
     @Test
@@ -150,10 +164,11 @@ class SellerTest {
       Seller seller = createSeller();
       assertThatThrownBy(() -> seller.reject("   "))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_REJECTION_REASON);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_REJECTION_REASON);
+              });
     }
   }
 
@@ -165,7 +180,8 @@ class SellerTest {
       Seller seller = createSeller();
       String newBusinessName = "새 상점";
       String newBusinessNumber = "0987654321";
-      seller.updateBusinessInfo(newBusinessName, newBusinessNumber, representativeName, businessAddress);
+      seller.updateBusinessInfo(
+          newBusinessName, newBusinessNumber, representativeName, businessAddress);
       assertThat(seller.getBusinessInfo().getBusinessName()).isEqualTo(newBusinessName);
       assertThat(seller.getBusinessInfo().getBusinessNumber()).isEqualTo(newBusinessNumber);
     }
@@ -176,10 +192,11 @@ class SellerTest {
       seller.withdraw();
       assertThatThrownBy(() -> seller.updateBusinessInfo("새 상점", "0987654321", "김철수", null))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.USER_ALREADY_WITHDRAWN);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.USER_ALREADY_WITHDRAWN);
+              });
     }
   }
 
@@ -201,10 +218,12 @@ class SellerTest {
       Seller seller = createSeller();
       assertThatThrownBy(() -> seller.updateSettlementInfo("004", "12345678901234", "홍길동"))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.CANNOT_UPDATE_SETTLEMENT_BEFORE_APPROVAL);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode())
+                    .isEqualTo(SellerErrorCode.CANNOT_UPDATE_SETTLEMENT_BEFORE_APPROVAL);
+              });
     }
 
     @Test
@@ -213,10 +232,12 @@ class SellerTest {
       seller.reject("서류 미비");
       assertThatThrownBy(() -> seller.updateSettlementInfo("004", "12345678901234", "홍길동"))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.CANNOT_UPDATE_SETTLEMENT_BEFORE_APPROVAL);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode())
+                    .isEqualTo(SellerErrorCode.CANNOT_UPDATE_SETTLEMENT_BEFORE_APPROVAL);
+              });
     }
   }
 
@@ -249,10 +270,12 @@ class SellerTest {
       Seller seller = createSeller();
       assertThatThrownBy(seller::validateCanRegisterPerformance)
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.CANNOT_REGISTER_PERFORMANCE);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode())
+                    .isEqualTo(SellerErrorCode.CANNOT_REGISTER_PERFORMANCE);
+              });
     }
   }
 

@@ -50,10 +50,11 @@ class BusinessInfoTest {
     void 상호명이_null이거나_빈_값이면_예외를_발생시킨다(String invalidName) {
       assertThatThrownBy(() -> BusinessInfo.of(invalidName, "1234567890", "홍길동", null))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BUSINESS_NAME);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BUSINESS_NAME);
+              });
     }
 
     @Test
@@ -61,10 +62,11 @@ class BusinessInfoTest {
       String longName = "가".repeat(201);
       assertThatThrownBy(() -> BusinessInfo.of(longName, "1234567890", "홍길동", null))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BUSINESS_NAME);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BUSINESS_NAME);
+              });
     }
   }
 
@@ -76,10 +78,11 @@ class BusinessInfoTest {
     void 사업자등록번호가_null이거나_빈_값이면_예외가_발생한다(String invalidNumber) {
       assertThatThrownBy(() -> BusinessInfo.of("테스트 상점", invalidNumber, "홍길동", null))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BUSINESS_NUMBER);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BUSINESS_NUMBER);
+              });
     }
 
     @ParameterizedTest
@@ -87,10 +90,11 @@ class BusinessInfoTest {
     void 사업자등록번호가_10자리_숫자가_아니면_예외가_발생한다(String invalidNumber) {
       assertThatThrownBy(() -> BusinessInfo.of("테스트 상점", invalidNumber, "홍길동", null))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BUSINESS_NUMBER);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_BUSINESS_NUMBER);
+              });
     }
 
     @ParameterizedTest
@@ -110,10 +114,12 @@ class BusinessInfoTest {
     void 대표자명이_null이거나_빈_값이면_예외가_발생한다(String invalidName) {
       assertThatThrownBy(() -> BusinessInfo.of("테스트 상점", "1234567890", invalidName, null))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_REPRESENTATIVE_NAME);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode())
+                    .isEqualTo(SellerErrorCode.INVALID_REPRESENTATIVE_NAME);
+              });
     }
 
     @Test
@@ -121,10 +127,12 @@ class BusinessInfoTest {
       String longName = "가".repeat(101);
       assertThatThrownBy(() -> BusinessInfo.of("테스트 상점", "1234567890", longName, null))
           .isInstanceOf(SellerException.class)
-          .satisfies(e -> {
-            SellerException se = (SellerException) e;
-            assertThat(se.getErrorCode()).isEqualTo(SellerErrorCode.INVALID_REPRESENTATIVE_NAME);
-          });
+          .satisfies(
+              e -> {
+                SellerException se = (SellerException) e;
+                assertThat(se.getErrorCode())
+                    .isEqualTo(SellerErrorCode.INVALID_REPRESENTATIVE_NAME);
+              });
     }
   }
 

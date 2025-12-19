@@ -30,14 +30,11 @@ import org.springframework.data.domain.Pageable;
 @DisplayName("AdminQueryService 테스트")
 class AdminQueryServiceTest {
 
-  @Autowired
-  private AdminQueryService adminQueryService;
+  @Autowired private AdminQueryService adminQueryService;
 
-  @Autowired
-  private AdminRepository adminRepository;
+  @Autowired private AdminRepository adminRepository;
 
-  @Autowired
-  private EntityManager entityManager;
+  @Autowired private EntityManager entityManager;
 
   private void flushAndClear() {
     entityManager.flush();
@@ -52,9 +49,14 @@ class AdminQueryServiceTest {
     @DisplayName("ID로 관리자를 조회한다")
     void getAdmin_success() {
       // given
-      Admin admin = Admin.create(
-          UUID.randomUUID(), "admin@example.com", "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER
-      );
+      Admin admin =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin@example.com",
+              "관리자",
+              "010-1234-5678",
+              "운영팀",
+              AdminRole.MANAGER);
       adminRepository.save(admin);
       flushAndClear();
 
@@ -82,10 +84,11 @@ class AdminQueryServiceTest {
       // when & then
       assertThatThrownBy(() -> adminQueryService.getAdmin(adminId))
           .isInstanceOf(AdminException.class)
-          .satisfies(ex -> {
-            AdminException adminException = (AdminException) ex;
-            assertThat(adminException.getErrorCode()).isEqualTo(AdminErrorCode.ADMIN_NOT_FOUND);
-          });
+          .satisfies(
+              ex -> {
+                AdminException adminException = (AdminException) ex;
+                assertThat(adminException.getErrorCode()).isEqualTo(AdminErrorCode.ADMIN_NOT_FOUND);
+              });
     }
   }
 
@@ -98,9 +101,8 @@ class AdminQueryServiceTest {
     void getAdminByEmail_success() {
       // given
       String email = "admin@example.com";
-      Admin admin = Admin.create(
-          UUID.randomUUID(), email, "관리자", "010-1234-5678", "운영팀", AdminRole.ADMIN
-      );
+      Admin admin =
+          Admin.create(UUID.randomUUID(), email, "관리자", "010-1234-5678", "운영팀", AdminRole.ADMIN);
       adminRepository.save(admin);
       flushAndClear();
 
@@ -122,10 +124,11 @@ class AdminQueryServiceTest {
       // when & then
       assertThatThrownBy(() -> adminQueryService.getAdminByEmail(email))
           .isInstanceOf(AdminException.class)
-          .satisfies(ex -> {
-            AdminException adminException = (AdminException) ex;
-            assertThat(adminException.getErrorCode()).isEqualTo(AdminErrorCode.ADMIN_NOT_FOUND);
-          });
+          .satisfies(
+              ex -> {
+                AdminException adminException = (AdminException) ex;
+                assertThat(adminException.getErrorCode()).isEqualTo(AdminErrorCode.ADMIN_NOT_FOUND);
+              });
     }
   }
 
@@ -137,17 +140,37 @@ class AdminQueryServiceTest {
     @DisplayName("조건으로 관리자를 검색한다")
     void searchAdmins_success() {
       // given
-      Admin admin1 = Admin.create(UUID.randomUUID(), "admin1@example.com", "관리자1", "010-1111-1111", "운영팀", AdminRole.MANAGER);
-      Admin admin2 = Admin.create(UUID.randomUUID(), "admin2@example.com", "관리자2", "010-2222-2222", "기술팀", AdminRole.MANAGER);
-      Admin admin3 = Admin.create(UUID.randomUUID(), "admin3@example.com", "관리자3", "010-3333-3333", "운영팀", AdminRole.ADMIN);
+      Admin admin1 =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin1@example.com",
+              "관리자1",
+              "010-1111-1111",
+              "운영팀",
+              AdminRole.MANAGER);
+      Admin admin2 =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin2@example.com",
+              "관리자2",
+              "010-2222-2222",
+              "기술팀",
+              AdminRole.MANAGER);
+      Admin admin3 =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin3@example.com",
+              "관리자3",
+              "010-3333-3333",
+              "운영팀",
+              AdminRole.ADMIN);
       adminRepository.save(admin1);
       adminRepository.save(admin2);
       adminRepository.save(admin3);
       flushAndClear();
 
-      AdminSearchRequest request = new AdminSearchRequest(
-          null, null, UserStatus.ACTIVE, AdminRole.MANAGER, null
-      );
+      AdminSearchRequest request =
+          new AdminSearchRequest(null, null, UserStatus.ACTIVE, AdminRole.MANAGER, null);
       Pageable pageable = PageRequest.of(0, 10);
 
       // when
@@ -155,7 +178,8 @@ class AdminQueryServiceTest {
 
       // then
       assertThat(result.getContent()).hasSize(2);
-      assertThat(result.getContent()).extracting(AdminResponse::name)
+      assertThat(result.getContent())
+          .extracting(AdminResponse::name)
           .containsExactlyInAnyOrder("관리자1", "관리자2");
     }
 
@@ -163,15 +187,27 @@ class AdminQueryServiceTest {
     @DisplayName("부서별로 관리자를 검색한다")
     void searchAdmins_byDepartment() {
       // given
-      Admin admin1 = Admin.create(UUID.randomUUID(), "admin1@example.com", "관리자1", "010-1111-1111", "운영팀", AdminRole.MANAGER);
-      Admin admin2 = Admin.create(UUID.randomUUID(), "admin2@example.com", "관리자2", "010-2222-2222", "기술팀", AdminRole.MANAGER);
+      Admin admin1 =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin1@example.com",
+              "관리자1",
+              "010-1111-1111",
+              "운영팀",
+              AdminRole.MANAGER);
+      Admin admin2 =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin2@example.com",
+              "관리자2",
+              "010-2222-2222",
+              "기술팀",
+              AdminRole.MANAGER);
       adminRepository.save(admin1);
       adminRepository.save(admin2);
       flushAndClear();
 
-      AdminSearchRequest request = new AdminSearchRequest(
-          null, null, null, null, "운영팀"
-      );
+      AdminSearchRequest request = new AdminSearchRequest(null, null, null, null, "운영팀");
       Pageable pageable = PageRequest.of(0, 10);
 
       // when
@@ -186,13 +222,19 @@ class AdminQueryServiceTest {
     @DisplayName("검색 결과가 없으면 빈 페이지를 반환한다")
     void searchAdmins_empty() {
       // given
-      Admin admin = Admin.create(UUID.randomUUID(), "admin@example.com", "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER);
+      Admin admin =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin@example.com",
+              "관리자",
+              "010-1234-5678",
+              "운영팀",
+              AdminRole.MANAGER);
       adminRepository.save(admin);
       flushAndClear();
 
-      AdminSearchRequest request = new AdminSearchRequest(
-          null, null, null, AdminRole.ADMIN, "존재하지않는부서"
-      );
+      AdminSearchRequest request =
+          new AdminSearchRequest(null, null, null, AdminRole.ADMIN, "존재하지않는부서");
       Pageable pageable = PageRequest.of(0, 10);
 
       // when
@@ -213,7 +255,8 @@ class AdminQueryServiceTest {
     void existsByEmail_true() {
       // given
       String email = "exists@example.com";
-      Admin admin = Admin.create(UUID.randomUUID(), email, "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER);
+      Admin admin =
+          Admin.create(UUID.randomUUID(), email, "관리자", "010-1234-5678", "운영팀", AdminRole.MANAGER);
       adminRepository.save(admin);
       flushAndClear();
 
@@ -246,9 +289,30 @@ class AdminQueryServiceTest {
     @DisplayName("ADMIN 역할의 활성 관리자 수를 조회한다")
     void countActiveByRole_admin() {
       // given
-      Admin admin1 = Admin.create(UUID.randomUUID(), "admin1@example.com", "관리자1", "010-1111-1111", "운영팀", AdminRole.ADMIN);
-      Admin admin2 = Admin.create(UUID.randomUUID(), "admin2@example.com", "관리자2", "010-2222-2222", "기술팀", AdminRole.ADMIN);
-      Admin manager = Admin.create(UUID.randomUUID(), "manager@example.com", "매니저", "010-3333-3333", "운영팀", AdminRole.MANAGER);
+      Admin admin1 =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin1@example.com",
+              "관리자1",
+              "010-1111-1111",
+              "운영팀",
+              AdminRole.ADMIN);
+      Admin admin2 =
+          Admin.create(
+              UUID.randomUUID(),
+              "admin2@example.com",
+              "관리자2",
+              "010-2222-2222",
+              "기술팀",
+              AdminRole.ADMIN);
+      Admin manager =
+          Admin.create(
+              UUID.randomUUID(),
+              "manager@example.com",
+              "매니저",
+              "010-3333-3333",
+              "운영팀",
+              AdminRole.MANAGER);
       adminRepository.save(admin1);
       adminRepository.save(admin2);
       adminRepository.save(manager);
@@ -265,8 +329,22 @@ class AdminQueryServiceTest {
     @DisplayName("정지된 관리자는 카운트에서 제외된다")
     void countActiveByRole_excludeSuspended() {
       // given
-      Admin active = Admin.create(UUID.randomUUID(), "active@example.com", "활성관리자", "010-1111-1111", "운영팀", AdminRole.ADMIN);
-      Admin suspended = Admin.create(UUID.randomUUID(), "suspended@example.com", "정지관리자", "010-2222-2222", "운영팀", AdminRole.ADMIN);
+      Admin active =
+          Admin.create(
+              UUID.randomUUID(),
+              "active@example.com",
+              "활성관리자",
+              "010-1111-1111",
+              "운영팀",
+              AdminRole.ADMIN);
+      Admin suspended =
+          Admin.create(
+              UUID.randomUUID(),
+              "suspended@example.com",
+              "정지관리자",
+              "010-2222-2222",
+              "운영팀",
+              AdminRole.ADMIN);
       suspended.suspend();
       adminRepository.save(active);
       adminRepository.save(suspended);

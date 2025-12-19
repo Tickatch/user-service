@@ -10,10 +10,10 @@ import lombok.Getter;
 /**
  * 사용자 상태 변경 이벤트.
  *
- * <p>User Service에서 사용자(Customer/Seller/Admin)의 상태가 변경되면 발행된다.
- * Auth Service는 이를 수신하여 인증 상태를 동기화한다.
+ * <p>User Service에서 사용자(Customer/Seller/Admin)의 상태가 변경되면 발행된다. Auth Service는 이를 수신하여 인증 상태를 동기화한다.
  *
  * <p>이벤트 정보:
+ *
  * <ul>
  *   <li>Aggregate Type: User
  *   <li>발행 서비스: user-service
@@ -49,10 +49,7 @@ public class UserStatusChangedEvent extends DomainEvent {
    * @param routingKey 라우팅 키
    */
   public UserStatusChangedEvent(
-      UUID userId,
-      String userType,
-      String statusChangeType,
-      String routingKey) {
+      UUID userId, String userType, String statusChangeType, String routingKey) {
     super();
     this.userId = userId;
     this.userType = userType;
@@ -60,9 +57,7 @@ public class UserStatusChangedEvent extends DomainEvent {
     this.routingKey = routingKey;
   }
 
-  /**
-   * JSON 역직렬화용 생성자.
-   */
+  /** JSON 역직렬화용 생성자. */
   @JsonCreator
   public UserStatusChangedEvent(
       @JsonProperty("eventId") String eventId,

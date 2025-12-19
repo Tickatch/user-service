@@ -55,8 +55,11 @@ public class RabbitCustomerEventPublisher implements CustomerEventPublisher {
       IntegrationEvent integrationEvent = IntegrationEvent.from(event, serviceName);
       rabbitTemplate.convertAndSend(userExchange, event.getRoutingKey(), integrationEvent);
 
-      log.info("고객 {} 이벤트 발행 완료. customerId: {}, routingKey: {}",
-          actionName, event.getUserId(), event.getRoutingKey());
+      log.info(
+          "고객 {} 이벤트 발행 완료. customerId: {}, routingKey: {}",
+          actionName,
+          event.getUserId(),
+          event.getRoutingKey());
     } catch (Exception e) {
       log.error("고객 {} 이벤트 발행 실패. customerId: {}", actionName, event.getUserId(), e);
       throw new UserException(UserErrorCode.EVENT_PUBLISH_FAILED, e, event.getUserId());

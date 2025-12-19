@@ -4,16 +4,9 @@ import com.tickatch.user_service.admin.domain.repository.dto.AdminSearchConditio
 import com.tickatch.user_service.admin.domain.vo.AdminRole;
 import com.tickatch.user_service.common.domain.vo.UserStatus;
 
-/**
- * 관리자 검색 요청 DTO.
- */
+/** 관리자 검색 요청 DTO. */
 public record AdminSearchRequest(
-    String email,
-    String name,
-    UserStatus status,
-    AdminRole adminRole,
-    String department
-) {
+    String email, String name, UserStatus status, AdminRole adminRole, String department) {
 
   public AdminSearchCondition toCondition() {
     return AdminSearchCondition.builder()

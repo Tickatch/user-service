@@ -66,30 +66,32 @@ public class SellerRepositoryImpl implements SellerRepository {
 
   @Override
   public Page<Seller> findAllByCondition(SellerSearchCondition condition, Pageable pageable) {
-    List<Seller> content = queryFactory
-        .selectFrom(seller)
-        .where(
-            emailContains(condition.getEmail()),
-            nameContains(condition.getName()),
-            statusEq(condition.getStatus()),
-            sellerStatusEq(condition.getSellerStatus()),
-            businessNameContains(condition.getBusinessName()),
-            businessNumberEq(condition.getBusinessNumber()))
-        .orderBy(getOrderSpecifiers(pageable.getSort()))
-        .offset(pageable.getOffset())
-        .limit(pageable.getPageSize())
-        .fetch();
+    List<Seller> content =
+        queryFactory
+            .selectFrom(seller)
+            .where(
+                emailContains(condition.getEmail()),
+                nameContains(condition.getName()),
+                statusEq(condition.getStatus()),
+                sellerStatusEq(condition.getSellerStatus()),
+                businessNameContains(condition.getBusinessName()),
+                businessNumberEq(condition.getBusinessNumber()))
+            .orderBy(getOrderSpecifiers(pageable.getSort()))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
-    JPAQuery<Long> countQuery = queryFactory
-        .select(seller.count())
-        .from(seller)
-        .where(
-            emailContains(condition.getEmail()),
-            nameContains(condition.getName()),
-            statusEq(condition.getStatus()),
-            sellerStatusEq(condition.getSellerStatus()),
-            businessNameContains(condition.getBusinessName()),
-            businessNumberEq(condition.getBusinessNumber()));
+    JPAQuery<Long> countQuery =
+        queryFactory
+            .select(seller.count())
+            .from(seller)
+            .where(
+                emailContains(condition.getEmail()),
+                nameContains(condition.getName()),
+                statusEq(condition.getStatus()),
+                sellerStatusEq(condition.getSellerStatus()),
+                businessNameContains(condition.getBusinessName()),
+                businessNumberEq(condition.getBusinessNumber()));
 
     return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
   }
@@ -112,34 +114,39 @@ public class SellerRepositoryImpl implements SellerRepository {
 
   private BooleanExpression businessNameContains(String businessName) {
     return StringUtils.hasText(businessName)
-        ? seller.businessInfo.businessName.containsIgnoreCase(businessName) : null;
+        ? seller.businessInfo.businessName.containsIgnoreCase(businessName)
+        : null;
   }
 
   private BooleanExpression businessNumberEq(String businessNumber) {
     return StringUtils.hasText(businessNumber)
-        ? seller.businessInfo.businessNumber.eq(businessNumber) : null;
+        ? seller.businessInfo.businessNumber.eq(businessNumber)
+        : null;
   }
 
   private OrderSpecifier<?>[] getOrderSpecifiers(Sort sort) {
     List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
 
-    sort.forEach(order -> {
-      Order direction = order.isAscending() ? Order.ASC : Order.DESC;
-      String property = order.getProperty();
+    sort.forEach(
+        order -> {
+          Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+          String property = order.getProperty();
 
-      OrderSpecifier<?> orderSpecifier = switch (property) {
-        case "email" -> new OrderSpecifier<>(direction, seller.email);
-        case "name" -> new OrderSpecifier<>(direction, seller.profile.name);
-        case "status" -> new OrderSpecifier<>(direction, seller.status);
-        case "sellerStatus" -> new OrderSpecifier<>(direction, seller.sellerStatus);
-        case "businessName" -> new OrderSpecifier<>(direction, seller.businessInfo.businessName);
-        case "approvedAt" -> new OrderSpecifier<>(direction, seller.approvedAt);
-        case "createdAt" -> new OrderSpecifier<>(direction, seller.createdAt);
-        case "updatedAt" -> new OrderSpecifier<>(direction, seller.updatedAt);
-        default -> new OrderSpecifier<>(direction, seller.createdAt);
-      };
-      orderSpecifiers.add(orderSpecifier);
-    });
+          OrderSpecifier<?> orderSpecifier =
+              switch (property) {
+                case "email" -> new OrderSpecifier<>(direction, seller.email);
+                case "name" -> new OrderSpecifier<>(direction, seller.profile.name);
+                case "status" -> new OrderSpecifier<>(direction, seller.status);
+                case "sellerStatus" -> new OrderSpecifier<>(direction, seller.sellerStatus);
+                case "businessName" ->
+                    new OrderSpecifier<>(direction, seller.businessInfo.businessName);
+                case "approvedAt" -> new OrderSpecifier<>(direction, seller.approvedAt);
+                case "createdAt" -> new OrderSpecifier<>(direction, seller.createdAt);
+                case "updatedAt" -> new OrderSpecifier<>(direction, seller.updatedAt);
+                default -> new OrderSpecifier<>(direction, seller.createdAt);
+              };
+          orderSpecifiers.add(orderSpecifier);
+        });
 
     if (orderSpecifiers.isEmpty()) {
       orderSpecifiers.add(new OrderSpecifier<>(Order.DESC, seller.createdAt));

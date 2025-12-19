@@ -22,8 +22,7 @@ import lombok.NoArgsConstructor;
 /**
  * 사용자 공통 추상 클래스.
  *
- * <p>Customer, Seller가 상속받는 공통 클래스이다.
- * ID는 Auth Service의 authId와 동일한 값을 사용한다.
+ * <p>Customer, Seller가 상속받는 공통 클래스이다. ID는 Auth Service의 authId와 동일한 값을 사용한다.
  *
  * @author Tickatch
  * @since 1.0.0
@@ -33,28 +32,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseUser extends AbstractAuditEntity {
 
-  /**
-   * 사용자 ID (Auth Service의 authId와 동일).
-   */
+  /** 사용자 ID (Auth Service의 authId와 동일). */
   @Id
   @Column(name = "id", nullable = false, updatable = false)
   private UUID id;
 
-  /**
-   * 이메일 (조회용, 수정 불가).
-   */
+  /** 이메일 (조회용, 수정 불가). */
   @Column(name = "email", nullable = false, length = 255)
   private String email;
 
-  /**
-   * 사용자 프로필.
-   */
-  @Embedded
-  private UserProfile profile;
+  /** 사용자 프로필. */
+  @Embedded private UserProfile profile;
 
-  /**
-   * 사용자 상태.
-   */
+  /** 사용자 상태. */
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 20)
   private UserStatus status;

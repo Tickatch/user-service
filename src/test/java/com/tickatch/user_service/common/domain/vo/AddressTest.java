@@ -54,30 +54,33 @@ class AddressTest {
     void 우편번호만_있고_기본_주소가_없으면_예외가_발생한다() {
       assertThatThrownBy(() -> Address.of("12345", null, null))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_ADDRESS);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_ADDRESS);
+              });
     }
 
     @Test
     void 상세_주소만_있고_기본_주소가_없으면_예외가_발생한다() {
       assertThatThrownBy(() -> Address.of(null, null, "상세주소"))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_ADDRESS);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_ADDRESS);
+              });
     }
 
     @Test
     void 우편번호가_10자리를_초과하면_예외가_발생한다() {
       assertThatThrownBy(() -> Address.of("12345678901", "서울시 강남구", null))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_ADDRESS);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_ADDRESS);
+              });
     }
 
     @Test
@@ -85,10 +88,11 @@ class AddressTest {
       String longAddress = "가".repeat(201);
       assertThatThrownBy(() -> Address.of("12345", longAddress, null))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_ADDRESS);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_ADDRESS);
+              });
     }
 
     @Test
@@ -96,10 +100,11 @@ class AddressTest {
       String longAddress = "가".repeat(201);
       assertThatThrownBy(() -> Address.of("12345", "서울시 강남구", longAddress))
           .isInstanceOf(UserException.class)
-          .satisfies(e -> {
-            UserException ue = (UserException) e;
-            assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_ADDRESS);
-          });
+          .satisfies(
+              e -> {
+                UserException ue = (UserException) e;
+                assertThat(ue.getErrorCode()).isEqualTo(UserErrorCode.INVALID_ADDRESS);
+              });
     }
   }
 

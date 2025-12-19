@@ -13,14 +13,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CustomerGrade {
 
-  /**
-   * 일반 등급.
-   */
+  /** 일반 등급. */
   NORMAL("일반 등급", 0),
 
-  /**
-   * VIP 등급.
-   */
+  /** VIP 등급. */
   VIP("VIP 등급", 1);
 
   private final String description;

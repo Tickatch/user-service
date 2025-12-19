@@ -10,13 +10,10 @@ import java.util.UUID;
  * @param changerAdminId 변경 수행 관리자 ID
  * @param newRole 새 역할
  */
-public record ChangeAdminRoleCommand(
-    UUID targetAdminId,
-    UUID changerAdminId,
-    AdminRole newRole
-) {
+public record ChangeAdminRoleCommand(UUID targetAdminId, UUID changerAdminId, AdminRole newRole) {
 
-  public static ChangeAdminRoleCommand of(UUID targetAdminId, UUID changerAdminId, AdminRole newRole) {
+  public static ChangeAdminRoleCommand of(
+      UUID targetAdminId, UUID changerAdminId, AdminRole newRole) {
     return new ChangeAdminRoleCommand(targetAdminId, changerAdminId, newRole);
   }
 }
